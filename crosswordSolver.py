@@ -138,6 +138,28 @@ class CrosswordSolver:
         if input == "+":
             return "PLUS"
         return input
+    
+    def getTheRelatedDomainOfThisCell(self, row, col):
+        domains = {}
+        #down
+        for location in self.locationOfDownClues:
+            wordIndex = -1
+            tempCol = self.locationOfDownClues[location]["start"]["col"]
+            rowStart = self.locationOfDownClues[location]["start"]["row"]
+            rowEnd = self.locationOfDownClues[location]["end"]["row"]
+            if (row <= int(rowEnd)) and (row >= int(rowStart)) and (col == int(tempCol)):
+                wordIndex = row-rowStart
+                domains["down"] = {"index": wordIndex, "domain": self.downClueDomains[location]}
+        #across
+        for location in self.locationOfAcrossClues:
+            wordIndex = -1
+            tempRow = self.locationOfAcrossClues[location]["start"]["row"]
+            colStart = self.locationOfAcrossClues[location]["start"]["col"]
+            colEnd = self.locationOfAcrossClues[location]["end"]["col"]
+            if (col <= int(colEnd)) and (col >= int(colStart)) and (row == int(tempRow)):
+                wordIndex = col-colStart
+                domains["across"] = {"index": wordIndex, "domain": self.acrossClueDomains[location]}
+        return domains
 
 
 grid = [["1","0","0","0","0"],["1","0","0","0","0"],["0","0","0","0","0"],["0","0","0","0","1"],["0","0","0","0","1"]]
@@ -164,3 +186,6 @@ print("\n Location of across clues")
 
 for across in solver.locationOfAcrossClues:
     print(across, "start: ", solver.locationOfAcrossClues[across]["start"], "end: ", solver.locationOfAcrossClues[across]["end"])
+
+print("")
+print(solver.getTheRelatedDomainOfThisCell(0,0))
