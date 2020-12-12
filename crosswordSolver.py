@@ -8,6 +8,9 @@ class CrosswordSolver:
 
         self.lengthOfDownClues = []
         self.lengthOfAcrossClues = []
+        
+        self.locationOfDownClues = {}
+        self.locationOfAcrossClues = {}
         self.wordLengthCalculator()
 
         self.downClueDomains = []
@@ -28,6 +31,7 @@ class CrosswordSolver:
                     rowIndex = counter
                 counter = counter + 1
             colIndex = self.numbers[rowIndex].index(clueNumber)
+            
 
             #count spaces
             wordLength = 0
@@ -35,6 +39,7 @@ class CrosswordSolver:
                 if row[colIndex] == "0":
                     wordLength = wordLength + 1
             self.lengthOfDownClues.append([clueNumber, wordLength])
+            self.locationOfDownClues[clueNumber] = {"start": {"row": rowIndex, "col": colIndex}, "end": {"row": rowIndex+wordLength-1, "col": colIndex}}
 
             #acrossClues
         for clue in self.acrossClues:
@@ -54,6 +59,7 @@ class CrosswordSolver:
                 if cell == "0":
                     wordLength = wordLength + 1
             self.lengthOfAcrossClues.append([clueNumber, wordLength])
+            self.locationOfAcrossClues[clueNumber] = {"start": {"row": rowIndex, "col": colIndex}, "end": {"row": rowIndex, "col": colIndex+wordLength-1}}
     
     def webScrap(self):
         print("TODO")
