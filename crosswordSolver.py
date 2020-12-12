@@ -6,8 +6,8 @@ class CrosswordSolver:
         self.downClues = downClues
         self.acrossClues = acrossClues
 
-        self.lengthOfDownClues = []
-        self.lengthOfAcrossClues = []
+        self.lengthOfDownClues = {}
+        self.lengthOfAcrossClues = {}
         
         self.locationOfDownClues = {}
         self.locationOfAcrossClues = {}
@@ -38,7 +38,7 @@ class CrosswordSolver:
             for row in self.grid[rowIndex:]:
                 if row[colIndex] == "0":
                     wordLength = wordLength + 1
-            self.lengthOfDownClues.append([clueNumber, wordLength])
+            self.lengthOfDownClues[clueNumber] = wordLength
             self.locationOfDownClues[clueNumber] = {"start": {"row": rowIndex, "col": colIndex}, "end": {"row": rowIndex+wordLength-1, "col": colIndex}}
 
             #acrossClues
@@ -58,7 +58,7 @@ class CrosswordSolver:
             for cell in self.grid[rowIndex][colIndex:]:
                 if cell == "0":
                     wordLength = wordLength + 1
-            self.lengthOfAcrossClues.append([clueNumber, wordLength])
+            self.lengthOfAcrossClues[clueNumber] = wordLength
             self.locationOfAcrossClues[clueNumber] = {"start": {"row": rowIndex, "col": colIndex}, "end": {"row": rowIndex, "col": colIndex+wordLength-1}}
     
     def webScrap(self):
@@ -72,32 +72,32 @@ class CrosswordSolver:
         newDomain = []
         for clue in self.lengthOfDownClues:
             previousWord = ""
-            for word in self.downClueDomains[clue[0]].split():
-                if (len(word) == clue[1]) and (word not in newDomain): #if word lenght is valid
+            for word in self.downClueDomains[clue].split():
+                if (len(word) == self.lengthOfDownClues[clue]) and (word not in newDomain): #if word lenght is valid
                     newDomain.append(word.upper())
                 prevPlusCur = previousWord + word
-                if (len(prevPlusCur) == clue[1]) and (prevPlusCur != word) and (prevPlusCur not in newDomain): #if two words next to each others total length is valid
+                if (len(prevPlusCur) == self.lengthOfDownClues[clue]) and (prevPlusCur != word) and (prevPlusCur not in newDomain): #if two words next to each others total length is valid
                     newDomain.append(prevPlusCur.upper())
                 previousWord = word
-                if (len(word) == clue[1]+1) and (word[clue[1]] == "s") and (word not in newDomain): #if the word ends with "s"
-                    newDomain.append(word[0:clue[1]].upper())
-            self.downClueDomains[clue[0]] = newDomain
+                if (len(word) == self.lengthOfDownClues[clue]+1) and (word[self.lengthOfDownClues[clue]] == "s") and (word not in newDomain): #if the word ends with "s"
+                    newDomain.append(word[0:self.lengthOfDownClues[clue]].upper())
+            self.downClueDomains[clue] = newDomain
             newDomain = []
 
         #acrossClues
         newDomain = []
         for clue in self.lengthOfAcrossClues:
             previousWord = ""
-            for word in self.acrossClueDomains[clue[0]].split():
-                if (len(word) == clue[1]) and (word not in newDomain): #if word lenght is valid
+            for word in self.acrossClueDomains[clue].split():
+                if (len(word) == self.lengthOfAcrossClues[clue]) and (word not in newDomain): #if word lenght is valid
                     newDomain.append(word.upper())
                 prevPlusCur = previousWord + word
-                if (len(prevPlusCur) == clue[1]) and (prevPlusCur != word) and (prevPlusCur not in newDomain): #if two words next to each others total length is valid
+                if (len(prevPlusCur) == self.lengthOfAcrossClues[clue]) and (prevPlusCur != word) and (prevPlusCur not in newDomain): #if two words next to each others total length is valid
                     newDomain.append(prevPlusCur.upper())
                 previousWord = word
-                if (len(word) == clue[1]+1) and (word[clue[1]] == "s") and (word not in newDomain): #if the word ends with "s"
-                    newDomain.append(word[0:clue[1]].upper())
-            self.acrossClueDomains[clue[0]] = newDomain
+                if (len(word) == self.lengthOfAcrossClues[clue]+1) and (word[self.lengthOfAcrossClues[clue]] == "s") and (word not in newDomain): #if the word ends with "s"
+                    newDomain.append(word[0:self.lengthOfAcrossClues[clue]].upper())
+            self.acrossClueDomains[clue] = newDomain
             newDomain = []
 
 
