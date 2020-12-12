@@ -13,8 +13,8 @@ class CrosswordSolver:
         self.locationOfAcrossClues = {}
         self.wordLengthCalculator()
 
-        self.downClueDomains = []
-        self.acrossClueDomains = []
+        self.downClueDomains = {}
+        self.acrossClueDomains = {}
         self.webScrap()
         self.filterDomains()
 
@@ -63,7 +63,7 @@ class CrosswordSolver:
     
     def webScrap(self):
         print("TODO")
-        textFromWeb = "Lorem Ipsum is simply dummy offers text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+        textFromWeb = "Lorem Ipsum is simply dummy offers text of the Henry's printing and typesetting industry. John' Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
         self.acrossClueDomains = {"1":textFromWeb,"5":textFromWeb ,"6":textFromWeb ,"7":textFromWeb ,"8":textFromWeb}
         self.downClueDomains = {"1":textFromWeb,"2":textFromWeb ,"3":textFromWeb ,"4":textFromWeb ,"6":textFromWeb}
 
@@ -81,6 +81,8 @@ class CrosswordSolver:
                 previousWord = word
                 if (len(word) == self.lengthOfDownClues[clue]+1) and (word[self.lengthOfDownClues[clue]] == "s") and (word not in newDomain): #if the word ends with "s"
                     newDomain.append(word[0:self.lengthOfDownClues[clue]].upper())
+                if ("'" in word) and (len( word[0:word.index("'")] ) == self.lengthOfDownClues[clue]) and (word[0:word.index("'")] not in newDomain):
+                    newDomain.append(word[0:word.index("'")].upper())
             self.downClueDomains[clue] = newDomain
             newDomain = []
 
@@ -97,6 +99,8 @@ class CrosswordSolver:
                 previousWord = word
                 if (len(word) == self.lengthOfAcrossClues[clue]+1) and (word[self.lengthOfAcrossClues[clue]] == "s") and (word not in newDomain): #if the word ends with "s"
                     newDomain.append(word[0:self.lengthOfAcrossClues[clue]].upper())
+                if ("'" in word) and (len( word[0:word.index("'")] ) == self.lengthOfAcrossClues[clue]) and (word[0:word.index("'")] not in newDomain):
+                    newDomain.append(word[0:word.index("'")].upper())
             self.acrossClueDomains[clue] = newDomain
             newDomain = []
 
