@@ -63,7 +63,7 @@ class CrosswordSolver:
     
     def webScrap(self):
         print("TODO")
-        textFromWeb = "Lorem Ipsum is simply dummy offers text of the Henry's printing and typesetting industry. John' Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+        textFromWeb = "Lorem Ipsum is + simply dummy offers text of the Henry's printing and 10 typesetting industry. John' Lorem 0 Ipsum has kill, murder!been john; plus+ for: the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
         self.acrossClueDomains = {"1":textFromWeb,"5":textFromWeb ,"6":textFromWeb ,"7":textFromWeb ,"8":textFromWeb}
         self.downClueDomains = {"1":textFromWeb,"2":textFromWeb ,"3":textFromWeb ,"4":textFromWeb ,"6":textFromWeb}
 
@@ -73,15 +73,18 @@ class CrosswordSolver:
         for clue in self.lengthOfDownClues:
             previousWord = ""
             for word in self.downClueDomains[clue].split():
-                if (len(word) == self.lengthOfDownClues[clue]) and (word not in newDomain): #if word lenght is valid
+                word = self.filterHelper(word)
+                if word[len(word)-1] == "." or word[len(word)-1] == ","  or word[len(word)-1] == ":"  or word[len(word)-1] == ";"  or word[len(word)-1] == "+" or word[len(word)-1] == "?" or word[len(word)-1] == "!" or word[len(word)-1] == ")" or word[len(word)-1] == "}" or word[len(word)-1] == "]":
+                    word = word[0:len(word)-1]
+                if (len(word) == self.lengthOfDownClues[clue]) and (word.upper() not in newDomain): #if word lenght is valid
                     newDomain.append(word.upper())
                 prevPlusCur = previousWord + word
-                if (len(prevPlusCur) == self.lengthOfDownClues[clue]) and (prevPlusCur != word) and (prevPlusCur not in newDomain): #if two words next to each others total length is valid
+                if (len(prevPlusCur) == self.lengthOfDownClues[clue]) and (prevPlusCur != word) and (prevPlusCur.upper() not in newDomain): #if two words next to each others total length is valid
                     newDomain.append(prevPlusCur.upper())
                 previousWord = word
                 if (len(word) == self.lengthOfDownClues[clue]+1) and (word[self.lengthOfDownClues[clue]] == "s") and (word not in newDomain): #if the word ends with "s"
                     newDomain.append(word[0:self.lengthOfDownClues[clue]].upper())
-                if ("'" in word) and (len( word[0:word.index("'")] ) == self.lengthOfDownClues[clue]) and (word[0:word.index("'")] not in newDomain):
+                if ("'" in word) and (len( word[0:word.index("'")] ) == self.lengthOfDownClues[clue]) and (word[0:word.index("'")].upper() not in newDomain):
                     newDomain.append(word[0:word.index("'")].upper())
             self.downClueDomains[clue] = newDomain
             newDomain = []
@@ -91,18 +94,50 @@ class CrosswordSolver:
         for clue in self.lengthOfAcrossClues:
             previousWord = ""
             for word in self.acrossClueDomains[clue].split():
-                if (len(word) == self.lengthOfAcrossClues[clue]) and (word not in newDomain): #if word lenght is valid
+                word = self.filterHelper(word)
+                if word[len(word)-1] == "." or word[len(word)-1] == ","  or word[len(word)-1] == ":"  or word[len(word)-1] == ";"  or word[len(word)-1] == "+" or word[len(word)-1] == "?" or word[len(word)-1] == "!" or word[len(word)-1] == ")" or word[len(word)-1] == "}" or word[len(word)-1] == "]":
+                    word = word[0:len(word)-1]
+                if (len(word) == self.lengthOfAcrossClues[clue]) and (word.upper() not in newDomain): #if word lenght is valid
                     newDomain.append(word.upper())
                 prevPlusCur = previousWord + word
-                if (len(prevPlusCur) == self.lengthOfAcrossClues[clue]) and (prevPlusCur != word) and (prevPlusCur not in newDomain): #if two words next to each others total length is valid
+                if (len(prevPlusCur) == self.lengthOfAcrossClues[clue]) and (prevPlusCur != word) and (prevPlusCur.upper() not in newDomain): #if two words next to each others total length is valid
                     newDomain.append(prevPlusCur.upper())
                 previousWord = word
-                if (len(word) == self.lengthOfAcrossClues[clue]+1) and (word[self.lengthOfAcrossClues[clue]] == "s") and (word not in newDomain): #if the word ends with "s"
+                if (len(word) == self.lengthOfAcrossClues[clue]+1) and (word[self.lengthOfAcrossClues[clue]] == "s") and (word[0:self.lengthOfAcrossClues[clue]].upper() not in newDomain): #if the word ends with "s"
                     newDomain.append(word[0:self.lengthOfAcrossClues[clue]].upper())
                 if ("'" in word) and (len( word[0:word.index("'")] ) == self.lengthOfAcrossClues[clue]) and (word[0:word.index("'")] not in newDomain):
                     newDomain.append(word[0:word.index("'")].upper())
             self.acrossClueDomains[clue] = newDomain
             newDomain = []
+    
+    def filterHelper(self, input):
+        if input == "0":
+            return "ZERO"
+        if input == "1":
+            return "ONE"
+        if input == "2":
+            return "TWO"
+        if input == "3":
+            return "THREE"
+        if input == "4":
+            return "FOUR"
+        if input == "5":
+            return "FIVE"
+        if input == "6":
+            return "SIX"
+        if input == "7":
+            return "SEVEN"
+        if input == "8":
+            return "EIGHT"
+        if input == "9":
+            return "NINE"
+        if input == "10":
+            return "TEN"
+        if input == "-":
+            return "MINUS"
+        if input == "+":
+            return "PLUS"
+        return input
 
 
 grid = [["1","0","0","0","0"],["1","0","0","0","0"],["0","0","0","0","0"],["0","0","0","0","1"],["0","0","0","0","1"]]
