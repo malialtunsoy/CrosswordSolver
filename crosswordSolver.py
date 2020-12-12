@@ -63,7 +63,7 @@ class CrosswordSolver:
     
     def webScrap(self):
         print("TODO")
-        textFromWeb = "Lorem Ipsum is + simply dummy offers text of the Henry's printing and 10 typesetting industry. John' Lorem 0 Ipsum has kill, murder!been john; plus+ for: the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+        textFromWeb = "Lorem Ipsum is + simply dummy offers sic slush hiree offer wes show life surfs isee cher text of the Henry's printing and 10 typesetting industry. John' Lorem 0 Ipsum has kill, murder!been john; plus+ for: the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
         self.acrossClueDomains = {"1":textFromWeb,"5":textFromWeb ,"6":textFromWeb ,"7":textFromWeb ,"8":textFromWeb}
         self.downClueDomains = {"1":textFromWeb,"2":textFromWeb ,"3":textFromWeb ,"4":textFromWeb ,"6":textFromWeb}
 
@@ -161,6 +161,45 @@ class CrosswordSolver:
                 domains["across"] = {"index": wordIndex, "domain": self.acrossClueDomains[location]}
         return domains
 
+    def solvePuzzle(self):
+        changeMade = True
+        while changeMade:
+            print("aaa")
+            changeMade = False
+            for row in range(0,5):
+                for col in range(0,5):
+                    if self.getTheRelatedDomainOfThisCell(row,col) != {}:
+                        domains = self.getTheRelatedDomainOfThisCell(row,col)
+                        for downWord in domains["down"]["domain"]:
+                            matched = False
+                            for acrossWord in domains["across"]["domain"]:
+                                if downWord[domains["down"]["index"]] == acrossWord[domains["across"]["index"]]:
+                                    matched = True
+                            if matched == False:
+                                domains["down"]["domain"].remove(downWord)
+                                changeMade = True
+
+                        for acrossWord in domains["across"]["domain"]:
+                            matched = False
+                            for downWord in domains["down"]["domain"]:
+                                if downWord[domains["down"]["index"]] == acrossWord[domains["across"]["index"]]:
+                                    matched = True
+                            if matched == False:
+                                domains["across"]["domain"].remove(acrossWord)
+                                changeMade = True
+    
+    def getAnswerGrid(self):
+        answerGrid = [["","","","",""],["","","","",""],["","","","",""],["","","","",""],["","","","",""]]
+        for row in range(0,5):
+            for col in range(0,5):
+                domains = self.getTheRelatedDomainOfThisCell(row,col)
+                if self.getTheRelatedDomainOfThisCell(row,col) == {}:
+                    answerGrid[row][col] = "-"
+                else:
+                    answerGrid[row][col] = domains["across"]["domain"][0][domains["across"]["index"]]
+        for row in answerGrid:
+            print(row)
+
 
 grid = [["1","0","0","0","0"],["1","0","0","0","0"],["0","0","0","0","0"],["0","0","0","0","1"],["0","0","0","0","1"]]
 numbers = [["-","1","2","3","4"],["-","5","-","-","-"],["6","-","-","-","-"],["7","-","-","-","-"],["8","-","-","-","-"]]
@@ -189,3 +228,17 @@ for across in solver.locationOfAcrossClues:
 
 print("")
 print(solver.getTheRelatedDomainOfThisCell(0,0))
+
+print("SOLVE PUZZLE")
+solver.solvePuzzle()
+
+print("\n Domain of down clues")
+for i in solver.downClueDomains:
+    print(i, solver.downClueDomains[i])
+
+print("\n Domain of across clues")
+for i in solver.acrossClueDomains:
+    print(i, solver.acrossClueDomains[i])
+
+print("")
+solver.getAnswerGrid()
