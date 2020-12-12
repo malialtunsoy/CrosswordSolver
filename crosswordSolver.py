@@ -112,8 +112,20 @@ acrossClues = [['1', '"Brooklyn Nine-Nine" or "The King of Queens"'],['5', '"Wha
 
 solver = CrosswordSolver(grid, numbers, downClues, acrossClues)
 
+print("\n Domain of down clues")
 for i in solver.downClueDomains:
-    print(solver.downClueDomains[i])
+    print(i, solver.downClueDomains[i])
 
+print("\n Domain of across clues")
 for i in solver.acrossClueDomains:
-    print(solver.acrossClueDomains[i])
+    print(i, solver.acrossClueDomains[i])
+
+print("\n Location of down clues")
+
+for down in solver.locationOfDownClues:
+    print(down, "start: ", solver.locationOfDownClues[down]["start"], "end: ", solver.locationOfDownClues[down]["end"])
+
+print("\n Location of across clues")
+
+for across in solver.locationOfAcrossClues:
+    print(across, "start: ", solver.locationOfAcrossClues[across]["start"], "end: ", solver.locationOfAcrossClues[across]["end"])
