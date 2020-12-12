@@ -65,23 +65,30 @@ class CrosswordSolver:
         #downClues
         newDomain = []
         for clue in self.lengthOfDownClues:
+            previousWord = ""
             for word in self.downClueDomains[clue[0]].split():
                 if len(word) == clue[1]:
-                    newDomain.append(word)
+                    newDomain.append(word.upper())
+                prevPlusCur = previousWord + word
+                if (len(prevPlusCur) == clue[1]) and (prevPlusCur != word):
+                    newDomain.append(prevPlusCur.upper())
+                previousWord = word
             self.downClueDomains[clue[0]] = newDomain
             newDomain = []
 
-         #acrossClues
+        #acrossClues
         newDomain = []
         for clue in self.lengthOfAcrossClues:
+            previousWord = ""
             for word in self.acrossClueDomains[clue[0]].split():
                 if len(word) == clue[1]:
-                    newDomain.append(word)
+                    newDomain.append(word.upper())
+                prevPlusCur = previousWord + word
+                if (len(prevPlusCur) == clue[1]) and (prevPlusCur != word):
+                    newDomain.append(prevPlusCur.upper())
+                previousWord = word
             self.acrossClueDomains[clue[0]] = newDomain
             newDomain = []
-
-
-
 
 
 grid = [["1","0","0","0","0"],["1","0","0","0","0"],["0","0","0","0","0"],["0","0","0","0","1"],["0","0","0","0","1"]]
@@ -89,4 +96,10 @@ numbers = [["-","1","2","3","4"],["-","5","-","-","-"],["6","-","-","-","-"],["7
 downClues = [['1', 'Partially melted snow'],['2', 'New employee'],['3', 'Result of a successful job interview'],['4', 'Director Anderson'],['6', '[not my mistake]']]
 acrossClues = [['1', '"Brooklyn Nine-Nine" or "The King of Queens"'],['5', '"What happens to us while we are making other plans," per Allen Saunders'],['6', 'Enjoys Santa Monica, perhaps'],['7', '"It\'s all clear now"'],['8', 'Singer nicknamed the "Goddess of Pop"']]
 
-sovler = CrosswordSolver(grid, numbers, downClues, acrossClues)
+solver = CrosswordSolver(grid, numbers, downClues, acrossClues)
+
+for i in solver.downClueDomains:
+    print(solver.downClueDomains[i])
+
+for i in solver.acrossClueDomains:
+    print(solver.acrossClueDomains[i])
