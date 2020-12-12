@@ -63,7 +63,7 @@ class CrosswordSolver:
     
     def webScrap(self):
         print("TODO")
-        textFromWeb = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+        textFromWeb = "Lorem Ipsum is simply dummy offers text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
         self.acrossClueDomains = {"1":textFromWeb,"5":textFromWeb ,"6":textFromWeb ,"7":textFromWeb ,"8":textFromWeb}
         self.downClueDomains = {"1":textFromWeb,"2":textFromWeb ,"3":textFromWeb ,"4":textFromWeb ,"6":textFromWeb}
 
@@ -73,12 +73,14 @@ class CrosswordSolver:
         for clue in self.lengthOfDownClues:
             previousWord = ""
             for word in self.downClueDomains[clue[0]].split():
-                if len(word) == clue[1]:
+                if (len(word) == clue[1]) and (word not in newDomain): #if word lenght is valid
                     newDomain.append(word.upper())
                 prevPlusCur = previousWord + word
-                if (len(prevPlusCur) == clue[1]) and (prevPlusCur != word):
+                if (len(prevPlusCur) == clue[1]) and (prevPlusCur != word) and (prevPlusCur not in newDomain): #if two words next to each others total length is valid
                     newDomain.append(prevPlusCur.upper())
                 previousWord = word
+                if (len(word) == clue[1]+1) and (word[clue[1]] == "s") and (word not in newDomain): #if the word ends with "s"
+                    newDomain.append(word[0:clue[1]].upper())
             self.downClueDomains[clue[0]] = newDomain
             newDomain = []
 
@@ -87,12 +89,14 @@ class CrosswordSolver:
         for clue in self.lengthOfAcrossClues:
             previousWord = ""
             for word in self.acrossClueDomains[clue[0]].split():
-                if len(word) == clue[1]:
+                if (len(word) == clue[1]) and (word not in newDomain): #if word lenght is valid
                     newDomain.append(word.upper())
                 prevPlusCur = previousWord + word
-                if (len(prevPlusCur) == clue[1]) and (prevPlusCur != word):
+                if (len(prevPlusCur) == clue[1]) and (prevPlusCur != word) and (prevPlusCur not in newDomain): #if two words next to each others total length is valid
                     newDomain.append(prevPlusCur.upper())
                 previousWord = word
+                if (len(word) == clue[1]+1) and (word[clue[1]] == "s") and (word not in newDomain): #if the word ends with "s"
+                    newDomain.append(word[0:clue[1]].upper())
             self.acrossClueDomains[clue[0]] = newDomain
             newDomain = []
 
