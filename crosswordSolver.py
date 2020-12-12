@@ -164,7 +164,6 @@ class CrosswordSolver:
     def solvePuzzle(self):
         changeMade = True
         while changeMade:
-            print("aaa")
             changeMade = False
             for row in range(0,5):
                 for col in range(0,5):
@@ -193,10 +192,16 @@ class CrosswordSolver:
         for row in range(0,5):
             for col in range(0,5):
                 domains = self.getTheRelatedDomainOfThisCell(row,col)
-                if self.getTheRelatedDomainOfThisCell(row,col) == {}:
+                if domains == {}:
                     answerGrid[row][col] = "-"
                 else:
-                    answerGrid[row][col] = domains["across"]["domain"][0][domains["across"]["index"]]
+                    if domains["across"]["domain"] != []:
+                        answerGrid[row][col] = domains["across"]["domain"][0][domains["across"]["index"]]
+                    else:
+                        if domains["down"]["domain"] != []:
+                            answerGrid[row][col] = domains["down"]["domain"][0][domains["down"]["index"]]
+                        else: 
+                            answerGrid[row][col] = "*"
         for row in answerGrid:
             print(row)
 
