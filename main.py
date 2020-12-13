@@ -28,7 +28,6 @@ class LUMOSCrosswordSolver:
         #WEB SCRAPING AND SETTING DOMAINS
         webScrapper = Scraping(self.clues)
         webScrapper.setDomains()
-        self.domains = webScrapper.domains
         
         #SOLVE THE PUZZLE
         
@@ -38,10 +37,10 @@ class LUMOSCrosswordSolver:
 
     def setClues(self):
         for across in self.cluesAcross:
-            self.clues["down"][across[0]] = across[1]
+            self.clues["across"][across[0]] = across[1]
         for down in self.cluesDown:
-            self.clues["across"][down[0]] = down[1]
+            self.clues["down"][down[0]] = down[1]
 
 lumos = LUMOSCrosswordSolver()
 lumos.run()
-print(lumos.clues)
+#print(lumos.clues)

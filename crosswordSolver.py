@@ -1,4 +1,5 @@
 import itertools
+import copy
 class CrosswordSolver:
     def __init__(self, grid, numbers, downClues, acrossClues, domains):
         self.grid = grid
@@ -6,6 +7,7 @@ class CrosswordSolver:
         self.downClues = downClues
         self.acrossClues = acrossClues
         self.domains = domains
+        self.initialDomains = copy.deepcopy(domains)
 
         self.lengthOfDownClues = {}
         self.lengthOfAcrossClues = {}
@@ -25,7 +27,7 @@ class CrosswordSolver:
         self.acrossClueDomains = {}
 
         self.wordLengthCalculator()        
-        self.webScrap(domains)
+        self.webScrap()
         self.filterDomains()
         self.solvePuzzle()
         self.printBestDomains()
@@ -35,8 +37,6 @@ class CrosswordSolver:
         
     def wordLengthCalculator(self):
         #downClues
-        print(self.downClues)
-        print(self.acrossClues)
         for clue in self.downClues:
             clueNumber = clue[0]
             rowIndex = -1
@@ -77,18 +77,19 @@ class CrosswordSolver:
             self.lengthOfAcrossClues[clueNumber] = wordLength
             self.locationOfAcrossClues[clueNumber] = {"start": {"row": rowIndex, "col": colIndex}, "end": {"row": rowIndex, "col": colIndex+wordLength-1}}
     
-    def webScrap(self, domains):
+    def webScrap(self):
         textFromWeb = "reps cello alias pizza ncaa capn relic eliza plaza sosa Lorem Ipsum is + simply dummy sic offers slush show hiree life surfs offer wes isee cher text of the Henry's printing and 10 typesetting industry. John' Lorem 0 Ipsum has kill, murder!been john; plus+ for: the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
         textFromWeb = "reps cello alias pizza ncaa capn relic eliza plaza sosa"
-        
-        self.acrossClueDomains = domains["across"]
-        self.downClueDomains = domains["down"]
 
+        self.acrossClueDomains = self.domains["across"]
+        self.downClueDomains = self.domains["down"]
+        """
         self.acrossClueDomains = {"1":textFromWeb,"5":textFromWeb ,"6":textFromWeb ,"7":textFromWeb ,"8":textFromWeb}
         self.downClueDomains = {"1":textFromWeb,"2":textFromWeb ,"3":textFromWeb ,"4":textFromWeb ,"5":textFromWeb}
-
+        """
 
     def filterDomains(self):
+        print("Filtering")
         #downClues
         newDomain = []
         for clue in self.lengthOfDownClues:
@@ -130,7 +131,10 @@ class CrosswordSolver:
                     newDomain.append(word[0:word.index("'")].upper())
             self.acrossClueDomains[clue] = newDomain
             newDomain = []
-    
+        print("Filtering end")
+        print(self.bestSolution)
+        if self.count == 0:
+            print(self.acrossClueDomains)
     def filterHelper(self, input):
         if input == "0":
             return "ZERO"
@@ -171,6 +175,9 @@ class CrosswordSolver:
             if (row <= int(rowEnd)) and (row >= int(rowStart)) and (col == int(tempCol)):
                 wordIndex = row-rowStart
                 if option == "best":
+                    print(location)
+                    print(self.bestSolution)
+                    print(self.locationOfDownClues)
                     domains["down"] = {"index": wordIndex, "domain": self.bestSolution["down"][location], "loc": self.locationOfDownClues[location]}
                 else:
                     domains["down"] = {"index": wordIndex, "domain": self.downClueDomains[location], "loc": self.locationOfDownClues[location]}
@@ -193,7 +200,9 @@ class CrosswordSolver:
         #while puzzle is solved try more jokers
         while puzzleNotSolved:
             puzzleNotSolved = False
-            self.webScrap(self.domains)
+            
+            self.domains = copy.deepcopy(self.initialDomains)
+            self.webScrap()
             self.filterDomains()
             if self.changeNeglected():
                 changeMade = True
