@@ -22,6 +22,7 @@ class CrosswordSolver:
         self.neglectedWordsArray = []
         self.count = 0
 
+        self.bestSolution = {"down": {}, "across": {}, "find": 0}
         
     def wordLengthCalculator(self):
         #downClues
@@ -66,7 +67,7 @@ class CrosswordSolver:
             self.locationOfAcrossClues[clueNumber] = {"start": {"row": rowIndex, "col": colIndex}, "end": {"row": rowIndex, "col": colIndex+wordLength-1}}
     
     def webScrap(self):
-        textFromWeb = "Lorem Ipsum is + simply dummy sic offers slush show hiree offer wes life surfs isee cher text of the Henry's printing and 10 typesetting industry. John' Lorem 0 Ipsum has kill, murder!been john; plus+ for: the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+        textFromWeb = "Lorem Ipsum is + simply dummy sic offers slush show hiree life surfs offer wes isee cher text of the Henry's printing and 10 typesetting industry. John' Lorem 0 Ipsum has kill, murder!been john; plus+ for: the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
         self.acrossClueDomains = {"1":textFromWeb,"5":textFromWeb ,"6":textFromWeb ,"7":textFromWeb ,"8":textFromWeb}
         self.downClueDomains = {"1":textFromWeb,"2":textFromWeb ,"3":textFromWeb ,"4":textFromWeb ,"6":textFromWeb}
 
@@ -141,8 +142,8 @@ class CrosswordSolver:
         if input == "+":
             return "PLUS"
         return input
-    
-    def getTheRelatedDomainOfThisCell(self, row, col):
+
+    def getTheRelatedDomainOfThisCell(self, row, col, option):
         domains = {}
         #down
         for location in self.locationOfDownClues:
@@ -152,7 +153,10 @@ class CrosswordSolver:
             rowEnd = self.locationOfDownClues[location]["end"]["row"]
             if (row <= int(rowEnd)) and (row >= int(rowStart)) and (col == int(tempCol)):
                 wordIndex = row-rowStart
-                domains["down"] = {"index": wordIndex, "domain": self.downClueDomains[location], "loc": self.locationOfDownClues[location]}
+                if option == "best":
+                    domains["down"] = {"index": wordIndex, "domain": self.bestSolution["down"][location], "loc": self.locationOfDownClues[location]}
+                else:
+                    domains["down"] = {"index": wordIndex, "domain": self.downClueDomains[location], "loc": self.locationOfDownClues[location]}
         #across
         for location in self.locationOfAcrossClues:
             wordIndex = -1
@@ -161,7 +165,10 @@ class CrosswordSolver:
             colEnd = self.locationOfAcrossClues[location]["end"]["col"]
             if (col <= int(colEnd)) and (col >= int(colStart)) and (row == int(tempRow)):
                 wordIndex = col-colStart
-                domains["across"] = {"index": wordIndex, "domain": self.acrossClueDomains[location], "loc": self.locationOfAcrossClues[location]}
+                if option == "best":
+                    domains["across"] = {"index": wordIndex, "domain": self.bestSolution["across"][location], "loc": self.locationOfAcrossClues[location]}
+                else:
+                    domains["across"] = {"index": wordIndex, "domain": self.acrossClueDomains[location], "loc": self.locationOfAcrossClues[location]}
         return domains
 
     def solvePuzzle(self):
@@ -180,8 +187,8 @@ class CrosswordSolver:
                         if row not in self.neglectedWords["row"]: #--------------------
                             for col in range(0,5):
                                 if col not in self.neglectedWords["col"]: #--------------------
-                                    if self.getTheRelatedDomainOfThisCell(row,col) != {}:
-                                        domains = self.getTheRelatedDomainOfThisCell(row,col)
+                                    if self.getTheRelatedDomainOfThisCell(row,col,"") != {}:
+                                        domains = self.getTheRelatedDomainOfThisCell(row,col,"")
                                         for downWord in domains["down"]["domain"]:
                                             matched = False
                                             for acrossWord in domains["across"]["domain"]:
@@ -199,20 +206,19 @@ class CrosswordSolver:
                                             if matched == False:
                                                 domains["across"]["domain"].remove(acrossWord)
                                                 changeMade = True
+                self.isItTheBestSolution()
                 #self.printDomains()
                 #print("\n\n------------------\n")
                 puzzleNotSolved = not self.isPuzzleSolved()
             else: 
                 return False
-
-
-    
+                
     def getAnswerGrid(self):
         answerGrid = [["","","","",""],["","","","",""],["","","","",""],["","","","",""],["","","","",""]]
         for row in range(0,5):
             for col in range(0,5):
                 if answerGrid[row][col] == "":
-                    domains = self.getTheRelatedDomainOfThisCell(row,col)
+                    domains = self.getTheRelatedDomainOfThisCell(row,col,"best")
                     if domains == {}:
                         answerGrid[row][col] = "-"
                     else:
@@ -235,7 +241,7 @@ class CrosswordSolver:
         for row in range(0,5):
             for col in range(0,5):
                 if answerGrid[row][col] == "":
-                    domains = self.getTheRelatedDomainOfThisCell(row,col)
+                    domains = self.getTheRelatedDomainOfThisCell(row,col,"")
                     if domains == {}:
                         answerGrid[row][col] = "-"
                     else:
@@ -259,6 +265,15 @@ class CrosswordSolver:
         print("\n Domain of across clues")
         for i in self.acrossClueDomains:
             print(i, self.acrossClueDomains[i])
+    
+    def printBestDomains(self):
+        print("\n Domain of down clues")
+        for i in self.bestSolution["down"]:
+            print(i, self.bestSolution["down"][i])
+
+        print("\n Domain of across clues")
+        for i in self.bestSolution["across"]:
+            print(i, self.bestSolution["across"][i])
 
     def changeNeglected(self):
         if self.count == 0:
@@ -278,8 +293,21 @@ class CrosswordSolver:
             self.neglectedWords = self.neglectedWordsArray[self.count]
             self.count = self.count + 1
             return True
-
-
+    
+    def isItTheBestSolution(self):
+        count = 0
+        for down in self.downClueDomains:
+            if len(self.downClueDomains[down]) == 1:
+                count = count + 1
+        for across in self.acrossClueDomains:
+            if len(self.acrossClueDomains[across]) == 1:
+                count = count + 1
+        if count > self.bestSolution["find"]:
+            for down in self.downClueDomains:
+                self.bestSolution["down"][down] =  self.downClueDomains[down]
+            for across in self.acrossClueDomains:
+                self.bestSolution["across"][across] =  self.acrossClueDomains[across]
+            self.bestSolution["find"] = count
 
 grid = [["1","0","0","0","0"],["1","0","0","0","0"],["0","0","0","0","0"],["0","0","0","0","1"],["0","0","0","0","1"]]
 numbers = [["-","1","2","3","4"],["-","5","-","-","-"],["6","-","-","-","-"],["7","-","-","-","-"],["8","-","-","-","-"]]
@@ -301,12 +329,11 @@ for across in solver.locationOfAcrossClues:
     print(across, "start: ", solver.locationOfAcrossClues[across]["start"], "end: ", solver.locationOfAcrossClues[across]["end"])
 
 print("")
-print(solver.getTheRelatedDomainOfThisCell(0,0))
 
 print("SOLVE PUZZLE")
 solver.solvePuzzle()
 
-solver.printDomains()
+solver.printBestDomains()
 
 print("")
 solver.getAnswerGrid()
