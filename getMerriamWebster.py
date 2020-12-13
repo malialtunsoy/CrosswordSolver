@@ -1,16 +1,19 @@
 import nltk 
 import requests
 from bs4 import BeautifulSoup
+from nltk.corpus import stopwords
 
 URL = "https://www.merriam-webster.com/dictionary/"
 
 def get_merriam_webster(query):
     # Tokenize the search query (clue)
-    words = nltk.word_tokenize(query)
+    tokens = nltk.word_tokenize(query)
+    tokens_without_sw = [word for word in tokens if not word in stopwords.words()]
+
     string_results = list()
 
-    for word in words:
-        request_url = URL + word
+    for token in tokens_without_sw:
+        request_url = URL + token
         page = requests.get(request_url)
         source = page.text
         soup = BeautifulSoup(source, 'html.parser')
