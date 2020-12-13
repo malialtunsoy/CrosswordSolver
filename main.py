@@ -28,7 +28,7 @@ class LUMOSCrosswordSolver:
         #WEB SCRAPING AND SETTING DOMAINS
         webScrapper = Scraping(self.clues)
         webScrapper.setDomains()
-        print(webScrapper.domains)
+        self.domains = webScrapper.domains
         
         #SOLVE THE PUZZLE
         
