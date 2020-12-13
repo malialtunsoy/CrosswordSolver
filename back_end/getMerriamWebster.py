@@ -24,6 +24,3 @@ def get_merriam_webster(query):
         string_results.append(result)
     
     return " ".join(string_results)
-
-print(get_merriam_webster("jargon"))
-
