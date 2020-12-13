@@ -1,31 +1,42 @@
 import itertools
 class CrosswordSolver:
-    def __init__(self, grid, numbers, downClues, acrossClues):
+    def __init__(self, grid, numbers, downClues, acrossClues, domains):
         self.grid = grid
         self.numbers = numbers
         self.downClues = downClues
         self.acrossClues = acrossClues
+        self.domains = domains
 
         self.lengthOfDownClues = {}
         self.lengthOfAcrossClues = {}
         
         self.locationOfDownClues = {}
         self.locationOfAcrossClues = {}
-        self.wordLengthCalculator()
-
-        self.downClueDomains = {}
-        self.acrossClueDomains = {}
-        self.webScrap()
-        self.filterDomains()
 
         self.neglectedWords = {"row": [], "col": []} 
         self.neglectedWordsArray = []
         self.count = 0
 
         self.bestSolution = {"down": {}, "across": {}, "find": 0}
+
+        self.solvedPuzzle = []
+
+        self.downClueDomains = {}
+        self.acrossClueDomains = {}
+
+        self.wordLengthCalculator()        
+        self.webScrap(domains)
+        self.filterDomains()
+        self.solvePuzzle()
+        self.printBestDomains()
+        self.getAnswerGrid()
+
+        
         
     def wordLengthCalculator(self):
         #downClues
+        print(self.downClues)
+        print(self.acrossClues)
         for clue in self.downClues:
             clueNumber = clue[0]
             rowIndex = -1
@@ -66,10 +77,16 @@ class CrosswordSolver:
             self.lengthOfAcrossClues[clueNumber] = wordLength
             self.locationOfAcrossClues[clueNumber] = {"start": {"row": rowIndex, "col": colIndex}, "end": {"row": rowIndex, "col": colIndex+wordLength-1}}
     
-    def webScrap(self):
-        textFromWeb = "Lorem Ipsum is + simply dummy sic offers slush show hiree life surfs offer wes isee cher text of the Henry's printing and 10 typesetting industry. John' Lorem 0 Ipsum has kill, murder!been john; plus+ for: the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+    def webScrap(self, domains):
+        textFromWeb = "reps cello alias pizza ncaa capn relic eliza plaza sosa Lorem Ipsum is + simply dummy sic offers slush show hiree life surfs offer wes isee cher text of the Henry's printing and 10 typesetting industry. John' Lorem 0 Ipsum has kill, murder!been john; plus+ for: the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+        textFromWeb = "reps cello alias pizza ncaa capn relic eliza plaza sosa"
+        
+        self.acrossClueDomains = domains["across"]
+        self.downClueDomains = domains["down"]
+
         self.acrossClueDomains = {"1":textFromWeb,"5":textFromWeb ,"6":textFromWeb ,"7":textFromWeb ,"8":textFromWeb}
-        self.downClueDomains = {"1":textFromWeb,"2":textFromWeb ,"3":textFromWeb ,"4":textFromWeb ,"6":textFromWeb}
+        self.downClueDomains = {"1":textFromWeb,"2":textFromWeb ,"3":textFromWeb ,"4":textFromWeb ,"5":textFromWeb}
+
 
     def filterDomains(self):
         #downClues
@@ -176,7 +193,7 @@ class CrosswordSolver:
         #while puzzle is solved try more jokers
         while puzzleNotSolved:
             puzzleNotSolved = False
-            self.webScrap()
+            self.webScrap(self.domains)
             self.filterDomains()
             if self.changeNeglected():
                 changeMade = True
@@ -234,6 +251,7 @@ class CrosswordSolver:
                     answerGrid[row][col] = "*"
         for row in answerGrid:
             print(row)
+        self.solvedPuzzle = answerGrid
 
     def isPuzzleSolved(self):
         answerGrid = [["","","","",""],["","","","",""],["","","","",""],["","","","",""],["","","","",""]]
@@ -308,7 +326,7 @@ class CrosswordSolver:
             for across in self.acrossClueDomains:
                 self.bestSolution["across"][across] =  self.acrossClueDomains[across]
             self.bestSolution["find"] = count
-
+"""
 grid = [["1","0","0","0","0"],["1","0","0","0","0"],["0","0","0","0","0"],["0","0","0","0","1"],["0","0","0","0","1"]]
 numbers = [["-","1","2","3","4"],["-","5","-","-","-"],["6","-","-","-","-"],["7","-","-","-","-"],["8","-","-","-","-"]]
 downClues = [['1', 'Partially melted snow'],['2', 'New employee'],['3', 'Result of a successful job interview'],['4', 'Director Anderson'],['6', '[not my mistake]']]
@@ -337,3 +355,4 @@ solver.printBestDomains()
 
 print("")
 solver.getAnswerGrid()
+"""
