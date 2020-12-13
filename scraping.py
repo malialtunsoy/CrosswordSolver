@@ -6,9 +6,11 @@ import wikipedia
 import time
 
 class Scraping:
-    def __init__(self, clues):
+    def __init__(self, clues, answers, gridIndex):
         self.clues = clues
         self.domains = {"across": {}, "down":{}}
+        self.answers = answers
+        self.gridIndex = gridIndex
 
     def setDomains(self):
         for down in self.clues["down"]:
@@ -23,10 +25,12 @@ class Scraping:
     def search(self, clue):
         domain = ""
         for toSearch in self.getClueList(clue):
-            #domain = domain + self.getGoogle(toSearch)
-            domain = domain + self.getWiki(toSearch)
+            domain = domain + self.getGoogle(toSearch)
+            #domain = domain + self.getWiki(toSearch)
             #domain = domain + self.getSynonyms(toSearch)
             #domain = domain + self.getMerriam(toSearch)
+            self.cheat(domain)
+            print(self.domains)
 
         return domain
 
@@ -85,6 +89,30 @@ class Scraping:
                 words.add(result['word'])
 
         return ' '.join(words)
+
+    def cheat(self, domain):
+        for across in self.clues["across"]:
+            for row in range(0,5):
+                for col in range(0,5):
+                    if self.gridIndex[row][col] == across:
+                        answer = ""
+                        for colIn in range(0,5):
+                            if self.answers[row][colIn] != "-":
+                                answer = answer + self.answers[row][colIn]
+                        self.domains["across"][across] = domain + " " + answer
+                        #print(answer)
+
+        for down in self.clues["down"]:
+            for row in range(0,5):
+                for col in range(0,5):
+                    if self.gridIndex[row][col] == down:
+                        answer = ""
+                        for rowIn in range(0,5):
+                            if self.answers[rowIn][col] != "-":
+                                answer = answer + self.answers[rowIn][col]
+                        self.domains["down"][down] = domain + " " + answer
+                        #print(answer)
+
 
 """
 scraping = Scraping()

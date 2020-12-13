@@ -26,9 +26,8 @@ class LUMOSCrosswordSolver:
         self.setClues()
 
         #WEB SCRAPING AND SETTING DOMAINS
-        webScrapper = Scraping(self.clues)
+        webScrapper = Scraping(self.clues, self.cellAnswerArray, self.cellNumberArray)
         webScrapper.setDomains()
-        
         #SOLVE THE PUZZLE
         
         puzzleSolver = CrosswordSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, webScrapper.domains)

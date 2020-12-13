@@ -26,7 +26,9 @@ class CrosswordSolver:
         self.downClueDomains = {}
         self.acrossClueDomains = {}
 
-        self.wordLengthCalculator()        
+        self.wordLengthCalculator()    
+        print(self.lengthOfAcrossClues)
+        print(self.lengthOfDownClues)    
         self.webScrap()
         self.filterDomains()
         self.solvePuzzle()
@@ -89,7 +91,6 @@ class CrosswordSolver:
         """
 
     def filterDomains(self):
-        print("Filtering")
         #downClues
         newDomain = []
         for clue in self.lengthOfDownClues:
@@ -131,10 +132,8 @@ class CrosswordSolver:
                     newDomain.append(word[0:word.index("'")].upper())
             self.acrossClueDomains[clue] = newDomain
             newDomain = []
-        print("Filtering end")
-        print(self.bestSolution)
-        if self.count == 0:
-            print(self.acrossClueDomains)
+
+            
     def filterHelper(self, input):
         if input == "0":
             return "ZERO"
@@ -315,6 +314,7 @@ class CrosswordSolver:
             self.count = self.count + 1
             return True
         else:
+            print(self.neglectedWords)
             if self.count == 1024:
                 return False
             self.neglectedWords = self.neglectedWordsArray[self.count]
