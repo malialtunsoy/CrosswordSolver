@@ -1,6 +1,8 @@
+from requests.api import delete
 from scraping import Scraping
 from crosswordSolver import CrosswordSolver
 from nyTimesPuzzle import Connector
+from theSaurusCom import theSaurusComt
 
 class LUMOSCrosswordSolver:
     def __init__(self):

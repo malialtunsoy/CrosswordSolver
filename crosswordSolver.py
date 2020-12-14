@@ -1,5 +1,6 @@
 import itertools
 import copy
+import string
 class CrosswordSolver:
     def __init__(self, grid, numbers, downClues, acrossClues, domains):
         self.grid = grid
@@ -112,6 +113,16 @@ class CrosswordSolver:
                     newDomain.append(word[0:self.lengthOfDownClues[clue]].upper())
                 if ("'" in word) and (len( word[0:word.index("'")] ) == self.lengthOfDownClues[clue]) and (word[0:word.index("'")].upper() not in newDomain):
                     newDomain.append(word[0:word.index("'")].upper())
+            for word in self.downClueDomains[clue].split("'"):
+                if len(word) == 4:
+                    newDomain.append(word.upper())
+            for word in reversed(newDomain):
+                deleted = False
+                for letter in word:
+                    if not letter in list(string.ascii_uppercase) and not deleted:
+                        print(word)
+                        newDomain.remove(word)
+                        deleted = True            
             self.downClueDomains[clue] = newDomain
             newDomain = []
 
