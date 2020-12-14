@@ -1,4 +1,5 @@
 from getMerriamWebster import get_merriam_webster
+from getMerriamWebster import combine_tokens
 from searchWikipedia import searchWikipediaApi
 from synonyms import searchSynonyms
 
@@ -28,7 +29,8 @@ class Scraping:
             domain = domain + self.getGoogle(toSearch)
             print("Wikipedia search for:", toSearch)
             domain = domain + self.getWiki(toSearch)
-            #domain = domain + self.getSynonyms(toSearch)
+            print("Synonym search for:", toSearch)
+            domain = domain + self.getSynonyms(toSearch)
             #domain = domain + self.getMerriam(toSearch)
             
 
@@ -45,7 +47,8 @@ class Scraping:
         return get_merriam_webster(toSearch)
 
     def getSynonyms(self, toSearch):
-        return searchSynonyms(toSearch)
+        for element in combine_tokens(toSearch):
+            return searchSynonyms(element)
 
     def cheat(self):
         for across in self.clues["across"]:

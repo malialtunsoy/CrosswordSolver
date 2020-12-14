@@ -84,8 +84,8 @@ class CrosswordSolver:
             self.locationOfAcrossClues[clueNumber] = {"start": {"row": rowIndex, "col": colIndex}, "end": {"row": rowIndex, "col": colIndex+wordLength-1}}
     
     def webScrap(self):
-        textFromWeb = "reps cello alias pizza ncaa capn relic eliza plaza sosa Lorem Ipsum is + simply dummy sic offers slush show hiree life surfs offer wes isee cher text of the Henry's printing and 10 typesetting industry. John' Lorem 0 Ipsum has kill, murder!been john; plus+ for: the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-        textFromWeb = "reps cello alias pizza ncaa capn relic eliza plaza sosa"
+        #textFromWeb = "reps cello alias pizza ncaa capn relic eliza plaza sosa Lorem Ipsum is + simply dummy sic offers slush show hiree life surfs offer wes isee cher text of the Henry's printing and 10 typesetting industry. John' Lorem 0 Ipsum has kill, murder!been john; plus+ for: the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+        #textFromWeb = "reps cello alias pizza ncaa capn relic eliza plaza sosa"
 
         self.acrossClueDomains = self.domains["across"]
         self.downClueDomains = self.domains["down"]
@@ -114,13 +114,12 @@ class CrosswordSolver:
                 if ("'" in word) and (len( word[0:word.index("'")] ) == self.lengthOfDownClues[clue]) and (word[0:word.index("'")].upper() not in newDomain):
                     newDomain.append(word[0:word.index("'")].upper())
             for word in self.downClueDomains[clue].split("'"):
-                if len(word) == 4:
+                if (len(word) == self.lengthOfDownClues[clue]) and (word.upper() not in newDomain): #if word lenght is valid
                     newDomain.append(word.upper())
             for word in reversed(newDomain):
                 deleted = False
                 for letter in word:
                     if not letter in list(string.ascii_uppercase) and not deleted:
-                        print(word)
                         newDomain.remove(word)
                         deleted = True            
             self.downClueDomains[clue] = newDomain
