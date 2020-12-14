@@ -1,25 +1,26 @@
-import nltk 
+import nltk
 import requests
 from bs4 import BeautifulSoup
 from nltk.corpus import stopwords
+import string
 
 URL = "https://www.merriam-webster.com/dictionary/"
 
+
 def get_merriam_webster(query):
     # Tokenize the search query (clue)
-    tokens = nltk.word_tokenize(query)
-    tokens_without_sw = [word for word in tokens if not word in stopwords.words()]
+    tokens = combine_tokens(query)
 
     string_results = list()
 
-    for token in tokens_without_sw:
+    for token in tokens:
         request_url = URL + token
         page = requests.get(request_url)
         source = page.text
         soup = BeautifulSoup(source, 'html.parser')
         for span in soup.find_all("span", class_="ex-sent first-child t no-aq sents"):
             span.decompose()
-    
+
         results = soup.find_all("span", class_="dtText")
 
         for result in results:
@@ -28,5 +29,19 @@ def get_merriam_webster(query):
             result = result.replace("\n", "")
             result = result.replace("\t", "")
             string_results.append(' '.join(result.split()))
-    
+
     return " ".join(string_results)
+
+
+def combine_tokens(clue):
+    clue = clue.lower()
+    clue_without_punctuation = clue.translate(
+        str.maketrans('', '', string.punctuation))
+    tokens = nltk.word_tokenize(clue_without_punctuation)
+    number_of_tokens = len(tokens)
+
+    for i in range(number_of_tokens):
+        for j in range(i + 1, number_of_tokens):
+            tokens.append(tokens[i] + " " + tokens[j])
+
+    return tokens
