@@ -27,8 +27,6 @@ class CrosswordSolver:
         self.acrossClueDomains = {}
 
         self.wordLengthCalculator()    
-        print(self.lengthOfAcrossClues)
-        print(self.lengthOfDownClues)    
         self.webScrap()
         self.filterDomains()
         self.solvePuzzle()
@@ -174,9 +172,6 @@ class CrosswordSolver:
             if (row <= int(rowEnd)) and (row >= int(rowStart)) and (col == int(tempCol)):
                 wordIndex = row-rowStart
                 if option == "best":
-                    print(location)
-                    print(self.bestSolution)
-                    print(self.locationOfDownClues)
                     domains["down"] = {"index": wordIndex, "domain": self.bestSolution["down"][location], "loc": self.locationOfDownClues[location]}
                 else:
                     domains["down"] = {"index": wordIndex, "domain": self.downClueDomains[location], "loc": self.locationOfDownClues[location]}
@@ -231,6 +226,7 @@ class CrosswordSolver:
                                             if matched == False:
                                                 domains["across"]["domain"].remove(acrossWord)
                                                 changeMade = True
+                    
                 self.isItTheBestSolution()
                 #self.printDomains()
                 #print("\n\n------------------\n")

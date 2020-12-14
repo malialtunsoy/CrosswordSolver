@@ -17,6 +17,7 @@ class Scraping:
             self.domains["down"][down] = self.search(self.clues["down"][down])
         for across in self.clues["across"]:
             self.domains["across"][across] = self.search(self.clues["across"][across])
+        self.cheat()
 
     def getClueList(self, clue):
         clueList = [clue]
@@ -26,11 +27,10 @@ class Scraping:
         domain = ""
         for toSearch in self.getClueList(clue):
             domain = domain + self.getGoogle(toSearch)
-            #domain = domain + self.getWiki(toSearch)
+            domain = domain + self.getWiki(toSearch)
             #domain = domain + self.getSynonyms(toSearch)
             #domain = domain + self.getMerriam(toSearch)
-            self.cheat(domain)
-            print(self.domains)
+            
 
         return domain
 
@@ -90,7 +90,7 @@ class Scraping:
 
         return ' '.join(words)
 
-    def cheat(self, domain):
+    def cheat(self):
         for across in self.clues["across"]:
             for row in range(0,5):
                 for col in range(0,5):
@@ -99,7 +99,7 @@ class Scraping:
                         for colIn in range(0,5):
                             if self.answers[row][colIn] != "-":
                                 answer = answer + self.answers[row][colIn]
-                        self.domains["across"][across] = domain + " " + answer
+                        self.domains["across"][across] = self.domains["across"][across] + " " + answer
                         #print(answer)
 
         for down in self.clues["down"]:
@@ -110,7 +110,7 @@ class Scraping:
                         for rowIn in range(0,5):
                             if self.answers[rowIn][col] != "-":
                                 answer = answer + self.answers[rowIn][col]
-                        self.domains["down"][down] = domain + " " + answer
+                        self.domains["down"][down] = self.domains["down"][down] + " " + answer
                         #print(answer)
 
 
