@@ -14,6 +14,7 @@ class Scraping:
             self.domains["down"][down] = self.search(self.clues["down"][down])
         for across in self.clues["across"]:
             self.domains["across"][across] = self.search(self.clues["across"][across])
+        #======================== CHEAT =============================
         self.cheat()
 
     def getClueList(self, clue):
@@ -23,7 +24,9 @@ class Scraping:
     def search(self, clue):
         domain = ""
         for toSearch in self.getClueList(clue):
+            print("Google search for:", toSearch)
             domain = domain + self.getGoogle(toSearch)
+            print("Wikipedia search for:", toSearch)
             domain = domain + self.getWiki(toSearch)
             #domain = domain + self.getSynonyms(toSearch)
             #domain = domain + self.getMerriam(toSearch)

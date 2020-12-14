@@ -25,10 +25,15 @@ class CrosswordSolver:
 
         self.downClueDomains = {}
         self.acrossClueDomains = {}
-
         self.wordLengthCalculator()    
         self.webScrap()
         self.filterDomains()
+        print("Initial size of the down domains:")
+        for down in self.downClueDomains:
+            print(down, "length: ", len(self.downClueDomains[down]))
+        print("Initial size of the across domains:")
+        for across in self.acrossClueDomains:
+            print(across, "length: ", len(self.acrossClueDomains[across]))
         self.solvePuzzle()
         self.printBestDomains()
         self.getAnswerGrid()

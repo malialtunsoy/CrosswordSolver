@@ -26,10 +26,11 @@ class LUMOSCrosswordSolver:
         self.setClues()
 
         #WEB SCRAPING AND SETTING DOMAINS
+        print("===================\nWEB SCRAPING\n===================")
         webScrapper = Scraping(self.clues, self.cellAnswerArray, self.cellNumberArray)
         webScrapper.setDomains()
         #SOLVE THE PUZZLE
-        
+        print("===================\nSOLVING THE PUZZLE\n===================")
         puzzleSolver = CrosswordSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, webScrapper.domains)
         
         #DRAW GUI
