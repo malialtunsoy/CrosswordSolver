@@ -1,6 +1,5 @@
-from getMerriamWebster import get_merriam_webster
-from getMerriamWebster import combine_tokens
-from searchWikipedia import searchWikipediaApi
+from getMerriamWebster import searchMerriamWebster
+from searchWikipedia import searchWikipedia
 from synonyms import searchSynonyms
 
 class Scraping:
@@ -58,10 +57,10 @@ class Scraping:
         return "toSearch"
 
     def getWiki(self, toSearch):
-        return searchWikipediaApi(toSearch)
+        return searchWikipedia(toSearch)
 
     def getMerriam(self,toSearch):
-        return get_merriam_webster(toSearch)
+        return searchMerriamWebster(toSearch)
 
     def getSynonyms(self, toSearch):
         return searchSynonyms(toSearch)
