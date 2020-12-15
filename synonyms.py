@@ -2,10 +2,14 @@ import requests
 from time import sleep
 from bs4 import BeautifulSoup
 import string
+from nltk.corpus import stopwords
+import nltk
+from getMerriamWebster import combine_tokens 
 
-def searchSynonyms(clue_words):
+def searchSynonyms(clue):
+    tokens = combine_tokens(clue)
     words = set()
-    for word in clue_words:
+    for word in tokens:
         if(contains_multiple_words(word)):
             # Thesaurus.com
             r_th = requests.get("https://www.thesaurus.com/browse/" + word.split()[0] + "%20" + word.split()[1])
@@ -55,11 +59,7 @@ def searchSynonyms(clue_words):
         results = r_dm.json()
         for result in results:
             words.add(result['word'])
-
-    return ' '.join(words)
+    return ' '.join(str(e) for e in words)
 
 def contains_multiple_words(s):
   return len(s.split()) > 1
-
-    
-#print(searchSynonyms(["historical", "artifact"]))
