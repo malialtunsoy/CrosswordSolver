@@ -2,9 +2,7 @@ import requests
 from time import sleep
 from bs4 import BeautifulSoup
 import string
-from nltk.corpus import stopwords
-import nltk
-from getMerriamWebster import combine_tokens 
+from combineTokens import combine_tokens 
 import cProfile
 import lxml
 import cchardet
@@ -36,7 +34,9 @@ def searchSynonyms(clue):
         soup = BeautifulSoup(r_th.text, 'lxml')
         texts = soup.select('.MainContentContainer.css-cv252o.e1h3b0ep0 a')
         for i in texts:
-            words.add(i.text)
+            for each in i.text.split():
+                each = each.translate(str.maketrans('', '', string.punctuation))
+                words.add(each.lower())
 
         soup = BeautifulSoup(r_mw.text, 'lxml')
 
@@ -56,5 +56,3 @@ def searchSynonyms(clue):
 
 def contains_multiple_words(s):
   return len(s.split()) > 1
-
-

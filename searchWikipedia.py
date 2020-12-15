@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import wikipedia
 import time
+import string
 
 def searchWikipediaSelenium(clue):
     driver = webdriver.Chrome("C:\chromedriver.exe")
@@ -22,12 +23,11 @@ def searchWikipediaSelenium(clue):
     return words
 
 
-def searchWikipediaApi(clue):
+def searchWikipedia(clue):
     search_results = wikipedia.search(clue, results=2)
-    text = ""
+    text = set()
     for result in search_results:
-        text += wikipedia.page(result + ".").content
-    return text
-
-
-# print(searchWikipediaApi("march madness org."))
+        content = wikipedia.page(result + ".").content.translate(str.maketrans('', '', string.punctuation))
+        for w in content.split():
+            text.add(w.lower())
+    return ' '.join(text) 

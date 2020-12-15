@@ -1,14 +1,12 @@
-import nltk
 import requests
 from bs4 import BeautifulSoup
-from nltk.corpus import stopwords
 import string
-stop_words = set(stopwords.words('english'))
+from combineTokens import combine_tokens
 
 URL = "https://www.merriam-webster.com/dictionary/"
 
 
-def get_merriam_webster(query):
+def searchMerriamWebster(query):
     # Tokenize the search query (clue)
     tokens = combine_tokens(query)
 
@@ -34,17 +32,3 @@ def get_merriam_webster(query):
     return " ".join(string_results)
 
 
-def combine_tokens(clue):
-    clue = clue.lower()
-    clue_without_punctuation = clue.translate(
-        str.maketrans('', '', string.punctuation))
-    tokens = nltk.word_tokenize(clue_without_punctuation)
-    tokens = [w for w in tokens if not w in stop_words]
-    number_of_tokens = len(tokens)
-    print(tokens)
-
-    for i in range(number_of_tokens):
-        if i != number_of_tokens -1:
-            tokens.append(tokens[i] + " " + tokens[i + 1])
-
-    return tokens
