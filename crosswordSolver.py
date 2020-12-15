@@ -34,6 +34,8 @@ class CrosswordSolver:
         self.wordLengthCalculator()    
         #self.webScrap()
         self.filterDomains()
+        with open('filteredDomains.json', 'w') as fp:
+            json.dump(self.filteredDomains, fp,  indent=4)
         self.tempDomains = copy.deepcopy(self.filteredDomains) #TEMP
         for down in self.filteredDomains["down"]:
             print(down, self.filteredDomains["down"][down])
@@ -124,7 +126,7 @@ class CrosswordSolver:
                 if (len(prevPlusCur) == self.lengthOfDownClues[clue]) and (prevPlusCur != word) and (prevPlusCur.upper() not in newDomain): #if two words next to each others total length is valid
                     newDomain.append(prevPlusCur.upper())
                 previousWord = word
-                if (len(word) == self.lengthOfDownClues[clue]+1) and (word[self.lengthOfDownClues[clue]] == "s") and (word not in newDomain): #if the word ends with "s"
+                if (len(word) == self.lengthOfDownClues[clue]+1) and (word[self.lengthOfDownClues[clue]] == "s") and (word.upper() not in newDomain): #if the word ends with "s"
                     newDomain.append(word[0:self.lengthOfDownClues[clue]].upper())
                 if ("'" in word) and (len( word[0:word.index("'")] ) == self.lengthOfDownClues[clue]) and (word[0:word.index("'")].upper() not in newDomain):
                     newDomain.append(word[0:word.index("'")].upper())
@@ -244,44 +246,48 @@ class CrosswordSolver:
                 changeMade = True
                 #Constraints
                 while changeMade:
-                    if self.count < 2:
-                        print("changeMAde")
-                        changeMade = False
-                        for row in range(0,5):
-                            if row not in self.neglectedWords["row"]: #--------------------
-                                for col in range(0,5):
-                                    if col not in self.neglectedWords["col"]: #--------------------
-                                        if self.getTheRelatedDomainOfThisCell(row,col,"") != {}:
-                                            domains = self.getTheRelatedDomainOfThisCell(row,col,"")
-                                            if self.count < 2:
-                                                print(domains)
-                                                
-                                                for downWord in domains["down"]["domain"]:
-                                                    matched = False
-                                                    for acrossWord in domains["across"]["domain"]:
-                                                        if downWord[domains["down"]["index"]] == acrossWord[domains["across"]["index"]]:
-                                                            matched = True
-                                                    if matched == False:
-                                                        domains["down"]["domain"].remove(downWord)
-                                                        print(downWord)
-                                                        changeMade = True
-
+                
+                    #print("changeMAde")
+                    changeMade = False
+                    for row in range(0,5):
+                        if row not in self.neglectedWords["row"]: #--------------------
+                            for col in range(0,5):
+                                if col not in self.neglectedWords["col"]: #--------------------
+                                    if self.getTheRelatedDomainOfThisCell(row,col,"") != {}:
+                                        domains = self.getTheRelatedDomainOfThisCell(row,col,"")
+                                        if self.count < 2:
+                                            #print(domains)
+                                            for downWord in domains["down"]["domain"]:
+                                                matched = False
                                                 for acrossWord in domains["across"]["domain"]:
-                                                    matched = False
-                                                    for downWord in domains["down"]["domain"]:
-                                                        if downWord[domains["down"]["index"]] == acrossWord[domains["across"]["index"]]:
-                                                            matched = True
-                                                    if matched == False:
-                                                        domains["across"]["domain"].remove(acrossWord)
-                                                        print(acrossWord)
-                                                        changeMade = True
-                                                input(self.count)
+                                                    if downWord[domains["down"]["index"]] == acrossWord[domains["across"]["index"]]:
+                                                        matched = True
+                                                if matched == False:
+                                                    domains["down"]["domain"].remove(downWord)
+                                                    #print(downWord)
+                                                    changeMade = True
+
+                                            for acrossWord in domains["across"]["domain"]:
+                                                matched = False
+                                                for downWord in domains["down"]["domain"]:
+                                                    if downWord[domains["down"]["index"]] == acrossWord[domains["across"]["index"]]:
+                                                        matched = True
+                                                if matched == False:
+                                                    domains["across"]["domain"].remove(acrossWord)
+                                                    #print(acrossWord)
+                                                    changeMade = True
+                                            #input(self.count)
+                                            
                 self.isItTheBestSolution()
                 if self.count < 2:
                     self.printDomains()
                     print("\n\n------------------\n")
                 puzzleNotSolved = not self.isPuzzleSolved()
+                print(self.tempDomains)
+                input(self.neglectedWords)
 
+                #with open('row1neglect.json', 'w') as fp:
+                #    json.dump(self.tempDomains, fp,  indent=4)
             else: 
                 return False
                 
@@ -361,7 +367,7 @@ class CrosswordSolver:
             self.count = self.count + 1
             return True
         else:
-            #print(self.neglectedWords)
+            print(self.neglectedWords)
             if self.count == 1024:
                 return False
             self.neglectedWords = self.neglectedWordsArray[self.count]

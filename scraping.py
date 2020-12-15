@@ -71,27 +71,27 @@ class Scraping:
 
     def cheat(self):
         for across in self.clues["across"]:
-            if across in ["1","8"]:
-                for row in range(0,5):
-                    for col in range(0,5):
-                        if self.gridIndex[row][col] == across:
-                            answer = ""
-                            for colIn in range(0,5):
-                                if self.answers[row][colIn] != "-":
-                                    answer = answer + self.answers[row][colIn]
-                            self.domains["across"][across] = self.domains["across"][across] + " " + answer
-                            #print(answer)
+            #if across in ["1","8"]:
+            for row in range(0,5):
+                for col in range(0,5):
+                    if self.gridIndex[row][col] == across:
+                        answer = ""
+                        for colIn in range(0,5):
+                            if self.answers[row][colIn] != "-":
+                                answer = answer + self.answers[row][colIn]
+                        self.domains["across"][across] = self.domains["across"][across] + " " + answer
+                        #print(answer)
 
         for down in self.clues["down"]:
-            if down in ["1","2","3","5"]:
-                for row in range(0,5):
-                    for col in range(0,5):
-                        if self.gridIndex[row][col] == down:
-                            answer = ""
-                            for rowIn in range(0,5):
-                                if self.answers[rowIn][col] != "-":
-                                    answer = answer + self.answers[rowIn][col]
-                            self.domains["down"][down] = self.domains["down"][down] + " " + answer
+            #if down in ["1","2","3","5"]:
+            for row in range(0,5):
+                for col in range(0,5):
+                    if self.gridIndex[row][col] == down:
+                        answer = ""
+                        for rowIn in range(0,5):
+                            if self.answers[rowIn][col] != "-":
+                                answer = answer + self.answers[rowIn][col]
+                        self.domains["down"][down] = self.domains["down"][down] + " " + answer
                             #print(answer)
 
 
