@@ -39,10 +39,12 @@ def combine_tokens(clue):
     clue_without_punctuation = clue.translate(
         str.maketrans('', '', string.punctuation))
     tokens = nltk.word_tokenize(clue_without_punctuation)
+    tokens = [w for w in tokens if not w in stop_words]
     number_of_tokens = len(tokens)
+    print(tokens)
 
     for i in range(number_of_tokens):
         if i != number_of_tokens -1:
             tokens.append(tokens[i] + " " + tokens[i + 1])
-    tokens = [w for w in tokens if not w in stop_words]
+
     return tokens

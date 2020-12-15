@@ -5,6 +5,9 @@ import string
 from nltk.corpus import stopwords
 import nltk
 from getMerriamWebster import combine_tokens 
+import cProfile
+import lxml
+import cchardet
 
 def searchSynonyms(clue):
     tokens = combine_tokens(clue)
@@ -30,12 +33,12 @@ def searchSynonyms(clue):
             # Datamuse
             r_dm = requests.get('https://api.datamuse.com/words?rel_syn={}'.format(word))
 
-       
-        soup = BeautifulSoup(r_th.text, 'html.parser')    
-        texts = soup.findAll(text=True)
-        
-            
-        soup = BeautifulSoup(r_mw.content, 'html.parser')
+        soup = BeautifulSoup(r_th.text, 'lxml')
+        texts = soup.select('.MainContentContainer.css-cv252o.e1h3b0ep0 a')
+        for i in texts:
+            words.add(i.text)
+
+        soup = BeautifulSoup(r_mw.text, 'lxml')
 
         for i in soup.select('.thes-list.syn-list a'):
             words.add(i.string)
@@ -49,8 +52,11 @@ def searchSynonyms(clue):
         results = r_dm.json()
         for result in results:
             words.add(result['word'])
-    return str(texts) + ' '.join(str(e) for e in words) 
+    return ' '.join(str(e) for e in words) 
 
 def contains_multiple_words(s):
   return len(s.split()) > 1
+
+
+searchSynonyms("Running total at a bar")
 
