@@ -22,35 +22,39 @@ class Scraping:
         return clueList
 
     def search(self, clue):
-        domain = ""
-        
-        for toSearch in self.getClueList(clue):
-            print("Google search for:", toSearch)
-            try:
-                domain = domain + self.getGoogle(toSearch)
-            except:
-                print("An exception occurred")
-            
-            print("Wikipedia search for:", toSearch)
-            try:
-                domain = domain + self.getWiki(toSearch)
-            except:
-                print("An exception occurred")
-            
-            print("Synonym search for:", toSearch)
-            try:
-                domain = domain + self.getSynonyms(toSearch)
-            except:
-                print("An exception occurred")
-            
-            print("Merriam Webster search for:", toSearch)
-            try:
-                domain = domain + self.getMerriam(toSearch)
-            except:
-                print("An exception occurred")
-        
+        domain = set()
+        wiki_set = set()
+        synonym_set = set()
+        merriam_set = set()
+        toSearch = clue
+        """
+        print("Google search for:", toSearch)
+        try:
+            domain = domain + self.getGoogle(toSearch)
+        except:
+            print("An exception occurred")
+        """
+        print("Wikipedia search for:", toSearch)
+        try:
 
-        return domain
+            wiki_set = wiki_set | self.getWiki(toSearch)
+        except:
+            print("An exception occurred")
+        
+        print("Synonym search for:", toSearch)
+        try:
+            synonym_set = synonym_set | self.getSynonyms(toSearch)
+        except:
+            print("An exception occurred")
+        
+        print("Merriam Webster search for:", toSearch)
+        try:
+            merriam_set = merriam_set | self.getMerriam(toSearch)
+        except:
+            print("An exception occurred")
+            
+        domain = domain.union(wiki_set, synonym_set, merriam_set)
+        return ' '.join(str(e) for e in domain) #''.join(str(e) for e in words)
 
     def getGoogle(self, toSearch):
 

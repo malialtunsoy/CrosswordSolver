@@ -10,7 +10,7 @@ def searchMerriamWebster(query):
     # Tokenize the search query (clue)
     tokens = combine_tokens(query)
 
-    string_results = list()
+    string_results = set()
 
     for token in tokens:
         request_url = URL + token
@@ -27,8 +27,8 @@ def searchMerriamWebster(query):
             result = result[1:]
             result = result.replace("\n", "")
             result = result.replace("\t", "")
-            string_results.append(' '.join(result.split()))
+            string_results.add(' '.join(result.split()))
 
-    return " ".join(string_results)
+    return string_results
 
 

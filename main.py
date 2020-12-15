@@ -17,7 +17,7 @@ class LUMOSCrosswordSolver:
 
     def run(self, ):
         #GET CROSSWORD PUZZLE
-        nyTimesConnector = Connector("C:\Program Files (x86)/chromedriver.exe")
+        nyTimesConnector = Connector("C:\chromedriver.exe")
         nyTimesConnector.connectToPuzzle()
         self.cellNumberArray = nyTimesConnector.cellNumberArray
         self.cellBlockArray = nyTimesConnector.cellBlockArray

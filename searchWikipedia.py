@@ -24,10 +24,11 @@ def searchWikipediaSelenium(clue):
 
 
 def searchWikipedia(clue):
+    clue = clue.translate(str.maketrans('', '', string.punctuation))
     search_results = wikipedia.search(clue, results=2)
     text = set()
     for result in search_results:
-        content = wikipedia.page(result + ".").content.translate(str.maketrans('', '', string.punctuation))
+        content = wikipedia.page(result + ".").summary.translate(str.maketrans('', '', string.punctuation))
         for w in content.split():
             text.add(w.lower())
-    return ' '.join(text) 
+    return text

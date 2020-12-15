@@ -52,7 +52,10 @@ def searchSynonyms(clue):
         results = r_dm.json()
         for result in results:
             words.add(result['word'])
-    return ' '.join(str(e) for e in words) 
+    return words
+    #' '.join(str(e) for e in words) 
+
 
 def contains_multiple_words(s):
   return len(s.split()) > 1
+
