@@ -58,5 +58,3 @@ def contains_multiple_words(s):
   return len(s.split()) > 1
 
 
-searchSynonyms("Running total at a bar")
-

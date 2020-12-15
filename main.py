@@ -29,14 +29,15 @@ class LUMOSCrosswordSolver:
 
         #WEB SCRAPING AND SETTING DOMAINS
         print("===================\nWEB SCRAPING\n===================")
-        #webScrapper = Scraping(self.clues, self.cellAnswerArray, self.cellNumberArray)
-        #webScrapper.setDomains()
+        webScrapper = Scraping(self.clues, self.cellAnswerArray, self.cellNumberArray)
+        webScrapper.setDomains()
         #SOLVE THE PUZZLE
         print("===================\nSOLVING THE PUZZLE\n===================")
-
+        """
         with open('data.json', 'r') as fp:
             data = json.load(fp)
-        puzzleSolver = CrosswordSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, data)
+        """
+        puzzleSolver = CrosswordSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, webScrapper.domains)
         
         #DRAW GUI
 

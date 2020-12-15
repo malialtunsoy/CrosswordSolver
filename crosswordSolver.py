@@ -10,7 +10,8 @@ class CrosswordSolver:
         self.acrossClues = acrossClues
         self.initialDomains = copy.deepcopy(domains) #INITIAL
         
-        
+        with open('data.json', 'w') as fp:
+            json.dump(domains, fp,  indent=4)
         self.lengthOfDownClues = {}
         self.lengthOfAcrossClues = {}
         
