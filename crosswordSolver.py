@@ -1,6 +1,7 @@
 import itertools
 import copy
 import string
+import json
 class CrosswordSolver:
     def __init__(self, grid, numbers, downClues, acrossClues, domains):
         self.grid = grid
@@ -9,6 +10,9 @@ class CrosswordSolver:
         self.acrossClues = acrossClues
         self.domains = domains
         self.initialDomains = copy.deepcopy(domains)
+
+        with open('data.json', 'w') as fp:
+            json.dump(domains, fp)
 
         self.lengthOfDownClues = {}
         self.lengthOfAcrossClues = {}
@@ -145,6 +149,16 @@ class CrosswordSolver:
                     newDomain.append(word[0:self.lengthOfAcrossClues[clue]].upper())
                 if ("'" in word) and (len( word[0:word.index("'")] ) == self.lengthOfAcrossClues[clue]) and (word[0:word.index("'")] not in newDomain):
                     newDomain.append(word[0:word.index("'")].upper())
+            for word in self.acrossClueDomains[clue].split("'"):
+                if (len(word) == self.lengthOfAcrossClues[clue]) and (word.upper() not in newDomain): #if word lenght is valid
+                    newDomain.append(word.upper())
+            for word in reversed(newDomain):
+                deleted = False
+                for letter in word:
+                    if not letter in list(string.ascii_uppercase) and not deleted:
+                        newDomain.remove(word)
+                        deleted = True       
+            newDomain = sorted(newDomain, key=str.lower)     
             self.acrossClueDomains[clue] = newDomain
             newDomain = []
 
@@ -245,9 +259,10 @@ class CrosswordSolver:
                                                 changeMade = True
                     
                 self.isItTheBestSolution()
-                #self.printDomains()
-                #print("\n\n------------------\n")
+                self.printDomains()
+                print("\n\n------------------\n")
                 puzzleNotSolved = not self.isPuzzleSolved()
+
             else: 
                 return False
                 

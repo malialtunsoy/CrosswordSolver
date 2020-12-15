@@ -24,6 +24,7 @@ class Scraping:
 
     def search(self, clue):
         domain = ""
+        
         for toSearch in self.getClueList(clue):
             print("Google search for:", toSearch)
             try:
@@ -38,18 +39,17 @@ class Scraping:
                 print("An exception occurred")
             
             print("Synonym search for:", toSearch)
-            """
             try:
                 domain = domain + self.getSynonyms(toSearch)
             except:
                 print("An exception occurred")
-            """
+            
             print("Merriam Webster search for:", toSearch)
             try:
                 domain = domain + self.getMerriam(toSearch)
             except:
                 print("An exception occurred")
-            
+        
 
         return domain
 
@@ -64,30 +64,32 @@ class Scraping:
         return get_merriam_webster(toSearch)
 
     def getSynonyms(self, toSearch):
-        searchSynonyms(combine_tokens(toSearch))
+        return searchSynonyms(toSearch)
 
     def cheat(self):
         for across in self.clues["across"]:
-            for row in range(0,5):
-                for col in range(0,5):
-                    if self.gridIndex[row][col] == across:
-                        answer = ""
-                        for colIn in range(0,5):
-                            if self.answers[row][colIn] != "-":
-                                answer = answer + self.answers[row][colIn]
-                        self.domains["across"][across] = self.domains["across"][across] + " " + answer
-                        #print(answer)
+            if across in ["1","8"]:
+                for row in range(0,5):
+                    for col in range(0,5):
+                        if self.gridIndex[row][col] == across:
+                            answer = ""
+                            for colIn in range(0,5):
+                                if self.answers[row][colIn] != "-":
+                                    answer = answer + self.answers[row][colIn]
+                            self.domains["across"][across] = self.domains["across"][across] + " " + answer
+                            #print(answer)
 
         for down in self.clues["down"]:
-            for row in range(0,5):
-                for col in range(0,5):
-                    if self.gridIndex[row][col] == down:
-                        answer = ""
-                        for rowIn in range(0,5):
-                            if self.answers[rowIn][col] != "-":
-                                answer = answer + self.answers[rowIn][col]
-                        self.domains["down"][down] = self.domains["down"][down] + " " + answer
-                        #print(answer)
+            if down in ["1","2","3","5"]:
+                for row in range(0,5):
+                    for col in range(0,5):
+                        if self.gridIndex[row][col] == down:
+                            answer = ""
+                            for rowIn in range(0,5):
+                                if self.answers[rowIn][col] != "-":
+                                    answer = answer + self.answers[rowIn][col]
+                            self.domains["down"][down] = self.domains["down"][down] + " " + answer
+                            #print(answer)
 
 
 """

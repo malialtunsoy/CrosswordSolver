@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from nltk.corpus import stopwords
 import string
+stop_words = set(stopwords.words('english'))
 
 URL = "https://www.merriam-webster.com/dictionary/"
 
@@ -41,7 +42,7 @@ def combine_tokens(clue):
     number_of_tokens = len(tokens)
 
     for i in range(number_of_tokens):
-        for j in range(i + 1, number_of_tokens):
-            tokens.append(tokens[i] + " " + tokens[j])
-
+        if i != number_of_tokens -1:
+            tokens.append(tokens[i] + " " + tokens[i + 1])
+    tokens = [w for w in tokens if not w in stop_words]
     return tokens

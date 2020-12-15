@@ -2,6 +2,7 @@ from requests.api import delete
 from scraping import Scraping
 from crosswordSolver import CrosswordSolver
 from nyTimesPuzzle import Connector
+import json
 
 class LUMOSCrosswordSolver:
     def __init__(self):
@@ -28,10 +29,12 @@ class LUMOSCrosswordSolver:
 
         #WEB SCRAPING AND SETTING DOMAINS
         print("===================\nWEB SCRAPING\n===================")
-        webScrapper = Scraping(self.clues, self.cellAnswerArray, self.cellNumberArray)
-        webScrapper.setDomains()
+        #webScrapper = Scraping(self.clues, self.cellAnswerArray, self.cellNumberArray)
+        #webScrapper.setDomains()
         #SOLVE THE PUZZLE
         print("===================\nSOLVING THE PUZZLE\n===================")
+        with open('data.json', 'w') as fp:
+            json.dump(data, fp)
         puzzleSolver = CrosswordSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, webScrapper.domains)
         
         #DRAW GUI

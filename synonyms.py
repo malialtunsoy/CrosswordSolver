@@ -33,17 +33,7 @@ def searchSynonyms(clue):
        
         soup = BeautifulSoup(r_th.text, 'html.parser')    
         texts = soup.findAll(text=True)
-        punc = False
-        for w in texts:
-            if ("WORD GAMES" in w) or ("Crossword" in w):
-                continue
-            for c in w:
-                if c in string.punctuation:
-                    punc = True
-                    break
-            if punc == False:
-                words.add(w)
-            punc = False
+        
             
         soup = BeautifulSoup(r_mw.content, 'html.parser')
 
@@ -59,7 +49,8 @@ def searchSynonyms(clue):
         results = r_dm.json()
         for result in results:
             words.add(result['word'])
-    return ' '.join(str(e) for e in words)
+    return str(texts) + ' '.join(str(e) for e in words) 
 
 def contains_multiple_words(s):
   return len(s.split()) > 1
+
