@@ -36,6 +36,7 @@ class LUMOSCrosswordSolver:
         
         with open('data.json', 'r') as fp:
             data = json.load(fp)
+        
         """
         with open('cellBlockArray.json', 'w') as fp:
             json.dump(self.cellBlockArray, fp,  indent=4)
@@ -46,7 +47,7 @@ class LUMOSCrosswordSolver:
         with open('cluesDown.json', 'w') as fp:
             json.dump(self.cluesDown, fp,  indent=4)
         """
-        puzzleSolver = CrosswordSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, data )#webScrapper.domains)
+        puzzleSolver = CrosswordSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, data)#webScrapper.domains)
         
         #DRAW GUI
 

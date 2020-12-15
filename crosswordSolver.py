@@ -10,8 +10,8 @@ class CrosswordSolver:
         self.acrossClues = acrossClues
         self.initialDomains = copy.deepcopy(domains) #INITIAL
         
-        with open('data.json', 'w') as fp:
-            json.dump(domains, fp,  indent=4)
+        #with open('data.json', 'w') as fp:
+         #   json.dump(domains, fp,  indent=4)
         self.lengthOfDownClues = {}
         self.lengthOfAcrossClues = {}
         
@@ -32,10 +32,10 @@ class CrosswordSolver:
         self.filteredDomains = {"down": {}, "across": {}} #FILTERED
 
         self.wordLengthCalculator()    
-        #self.webScrap()
+        
         self.filterDomains()
-        with open('filteredDomains.json', 'w') as fp:
-            json.dump(self.filteredDomains, fp,  indent=4)
+        #with open('filteredDomains.json', 'w') as fp:
+         #   json.dump(self.filteredDomains, fp,  indent=4)
         self.tempDomains = copy.deepcopy(self.filteredDomains) #TEMP
         for down in self.filteredDomains["down"]:
             print(down, self.filteredDomains["down"][down])
@@ -99,18 +99,7 @@ class CrosswordSolver:
                     wordLength = wordLength + 1
             self.lengthOfAcrossClues[clueNumber] = wordLength
             self.locationOfAcrossClues[clueNumber] = {"start": {"row": rowIndex, "col": colIndex}, "end": {"row": rowIndex, "col": colIndex+wordLength-1}}
-    """
-    def webScrap(self):
-        #textFromWeb = "reps cello alias pizza ncaa capn relic eliza plaza sosa Lorem Ipsum is + simply dummy sic offers slush show hiree life surfs offer wes isee cher text of the Henry's printing and 10 typesetting industry. John' Lorem 0 Ipsum has kill, murder!been john; plus+ for: the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-        #textFromWeb = "reps cello alias pizza ncaa capn relic eliza plaza sosa"
-
-        self.acrossClueDomains = self.domains["across"]
-        self.downClueDomains = self.domains["down"]
-        
-        self.acrossClueDomains = {"1":textFromWeb,"5":textFromWeb ,"6":textFromWeb ,"7":textFromWeb ,"8":textFromWeb}
-        self.downClueDomains = {"1":textFromWeb,"2":textFromWeb ,"3":textFromWeb ,"4":textFromWeb ,"5":textFromWeb}
-        
-    """
+ 
     def filterDomains(self):
         #downClues
         newDomain = []
@@ -246,8 +235,6 @@ class CrosswordSolver:
                 changeMade = True
                 #Constraints
                 while changeMade:
-                
-                    #print("changeMAde")
                     changeMade = False
                     for row in range(0,5):
                         if row not in self.neglectedWords["row"]: #--------------------
@@ -255,33 +242,35 @@ class CrosswordSolver:
                                 if col not in self.neglectedWords["col"]: #--------------------
                                     if self.getTheRelatedDomainOfThisCell(row,col,"") != {}:
                                         domains = self.getTheRelatedDomainOfThisCell(row,col,"")
-                                        if self.count < 2:
-                                            #print(domains)
-                                            for downWord in domains["down"]["domain"]:
-                                                matched = False
-                                                for acrossWord in domains["across"]["domain"]:
-                                                    if downWord[domains["down"]["index"]] == acrossWord[domains["across"]["index"]]:
-                                                        matched = True
-                                                if matched == False:
-                                                    domains["down"]["domain"].remove(downWord)
-                                                    #print(downWord)
-                                                    changeMade = True
-
+                                    
+                                        #print(domains)
+                                        for downWord in domains["down"]["domain"]:
+                                            matched = False
                                             for acrossWord in domains["across"]["domain"]:
-                                                matched = False
-                                                for downWord in domains["down"]["domain"]:
-                                                    if downWord[domains["down"]["index"]] == acrossWord[domains["across"]["index"]]:
-                                                        matched = True
-                                                if matched == False:
-                                                    domains["across"]["domain"].remove(acrossWord)
-                                                    #print(acrossWord)
-                                                    changeMade = True
-                                            #input(self.count)
+                                                if downWord[domains["down"]["index"]] == acrossWord[domains["across"]["index"]]:
+                                                    matched = True
+                                            if matched == False:
+                                                domains["down"]["domain"].remove(downWord)
+                                                #print(downWord)
+                                                changeMade = True
+
+                                        for acrossWord in domains["across"]["domain"]:
+                                            matched = False
+                                            for downWord in domains["down"]["domain"]:
+                                                if downWord[domains["down"]["index"]] == acrossWord[domains["across"]["index"]]:
+                                                    matched = True
+                                            if matched == False:
+                                                domains["across"]["domain"].remove(acrossWord)
+                                                #print(acrossWord)
+                                                changeMade = True
+                                        #input(self.count)
                                             
                 self.isItTheBestSolution()
+                """
                 if self.count < 2:
                     self.printDomains()
                     print("\n\n------------------\n")
+                """
                 puzzleNotSolved = not self.isPuzzleSolved()
                 print(self.tempDomains)
                 input(self.neglectedWords)
@@ -292,27 +281,30 @@ class CrosswordSolver:
                 return False
                 
     def getAnswerGrid(self):
-        answerGrid = [["","","","",""],["","","","",""],["","","","",""],["","","","",""],["","","","",""]]
-        for row in range(0,5):
-            for col in range(0,5):
-                if answerGrid[row][col] == "":
-                    domains = self.getTheRelatedDomainOfThisCell(row,col,"best")
-                    if domains == {}:
-                        answerGrid[row][col] = "-"
-                    else:
-                        if len(domains["across"]["domain"]) == 1:
-                            for colIndex in range(domains["across"]["loc"]["start"]["col"], domains["across"]["loc"]["start"]["col"] + len(domains["across"]["domain"][0])):
-                                answerGrid[row][colIndex] = domains["across"]["domain"][0][colIndex - domains["across"]["loc"]["start"]["col"]]                            
-                        if len(domains["down"]["domain"]) == 1:
-                            for rowIndex in range(domains["down"]["loc"]["start"]["row"], domains["down"]["loc"]["start"]["row"] + len(domains["down"]["domain"][0])):
-                                answerGrid[rowIndex][col] = domains["down"]["domain"][0][rowIndex - domains["down"]["loc"]["start"]["row"]]
-        for row in range(0,5):
-            for col in range(0,5):
-                if answerGrid[row][col] == "":
-                    answerGrid[row][col] = "*"
-        for row in answerGrid:
-            print(row)
-        self.solvedPuzzle = answerGrid
+        if self.bestSolution["find"] != 0:
+            answerGrid = [["","","","",""],["","","","",""],["","","","",""],["","","","",""],["","","","",""]]
+            for row in range(0,5):
+                for col in range(0,5):
+                    if answerGrid[row][col] == "":
+                        domains = self.getTheRelatedDomainOfThisCell(row,col,"best")
+                        if domains == {}:
+                            answerGrid[row][col] = "-"
+                        else:
+                            if len(domains["across"]["domain"]) == 1:
+                                for colIndex in range(domains["across"]["loc"]["start"]["col"], domains["across"]["loc"]["start"]["col"] + len(domains["across"]["domain"][0])):
+                                    answerGrid[row][colIndex] = domains["across"]["domain"][0][colIndex - domains["across"]["loc"]["start"]["col"]]                            
+                            if len(domains["down"]["domain"]) == 1:
+                                for rowIndex in range(domains["down"]["loc"]["start"]["row"], domains["down"]["loc"]["start"]["row"] + len(domains["down"]["domain"][0])):
+                                    answerGrid[rowIndex][col] = domains["down"]["domain"][0][rowIndex - domains["down"]["loc"]["start"]["row"]]
+            for row in range(0,5):
+                for col in range(0,5):
+                    if answerGrid[row][col] == "":
+                        answerGrid[row][col] = "*"
+            for row in answerGrid:
+                print(row)
+            self.solvedPuzzle = answerGrid
+        else:
+            print(" CORT ")
 
     def isPuzzleSolved(self):
         answerGrid = [["","","","",""],["","","","",""],["","","","",""],["","","","",""],["","","","",""]]
@@ -388,6 +380,54 @@ class CrosswordSolver:
             for across in self.tempDomains["across"]:
                 self.bestSolution["across"][across] =  self.tempDomains["across"][across]
             self.bestSolution["find"] = count
+"""
+    def tryPossibleCombinations(self):
+        rows = ["1","4","6","7","8"]
+        cols = ["4","5","1","2","3"]
+        answerGridRows = [["","","","",""],["","","","",""],["","","","",""],["","","","",""],["","","","",""]]
+        answerGridCols = [["","","","",""],["","","","",""],["","","","",""],["","","","",""],["","","","",""]]
+        bestScore = 0
+        bestRow = []
+        besCol = []
+        for row1 in self.tempDomains["across"][rows[0]]:
+            for row2 in self.tempDomains["across"][rows[1]]:
+                for row3 in self.tempDomains["across"][rows[2]]:
+                    for row4 in self.tempDomains["across"][rows[3]]:
+                        for row5 in self.tempDomains["across"][rows[4]]:
+                            for col1 in self.tempDomains["down"][cols[0]]:
+                                for col2 in self.tempDomains["down"][cols[1]]:
+                                    for col3 in self.tempDomains["down"][cols[2]]:
+                                        for col4 in self.tempDomains["down"][cols[3]]:
+                                            for col5 in self.tempDomains["down"][cols[4]]:
+                                                curRows = [row1,row2,row3,row4,row5]
+                                                curCols = [col1,col2,col3,col4,col5]
+                                                #rows
+                                                for row in range(0,5):
+                                                    for col in range(0,5):
+                                                        if self.getTheRelatedDomainOfThisCell(row,col,"") != {} and self.grid[row][col] != "1":
+                                                            index = self.getTheRelatedDomainOfThisCell(row,col,"")["across"]["index"]
+                                                            answerGridRows[row][col] = curRows[row][index]
+                                                #cols
+                                                for row in range(0,5):
+                                                    for col in range(0,5):
+                                                        if self.getTheRelatedDomainOfThisCell(row,col,"") != {} and self.grid[row][col] != "1":
+                                                            index = self.getTheRelatedDomainOfThisCell(row,col,"")["down"]["index"]
+                                                            answerGridCols[row][col] = curCols[col][index]
+                                                count = 0
+                                                for row in range(0,5):
+                                                    for col in range(0,5):
+                                                        if answerGridCols[row][col] == answerGridRows[row][col]:
+                                                            count += 1
+                                                if count > bestScore:
+                                                    bestScore = count
+                                                    bestRow = answerGridRows
+                                                    besCol = answerGridCols
+        for i in besCol:
+            print(i)
+        for i in bestRow:
+            print(i)
+        input("bismillah")     
+"""                                   
 """
 grid = [["1","0","0","0","0"],["1","0","0","0","0"],["0","0","0","0","0"],["0","0","0","0","1"],["0","0","0","0","1"]]
 numbers = [["-","1","2","3","4"],["-","5","-","-","-"],["6","-","-","-","-"],["7","-","-","-","-"],["8","-","-","-","-"]]
