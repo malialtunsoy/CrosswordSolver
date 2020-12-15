@@ -33,9 +33,10 @@ class LUMOSCrosswordSolver:
         #webScrapper.setDomains()
         #SOLVE THE PUZZLE
         print("===================\nSOLVING THE PUZZLE\n===================")
-        with open('data.json', 'w') as fp:
-            json.dump(data, fp)
-        puzzleSolver = CrosswordSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, webScrapper.domains)
+
+        with open('data.json', 'r') as fp:
+            data = json.load(fp)
+        puzzleSolver = CrosswordSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, data)
         
         #DRAW GUI
 
