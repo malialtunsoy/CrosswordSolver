@@ -29,6 +29,7 @@ class CrosswordSolver:
         self.wordLengthCalculator()    
         self.webScrap()
         self.filterDomains()
+        self.printDomains()
         print("Initial size of the down domains:")
         for down in self.downClueDomains:
             print(down, "length: ", len(self.downClueDomains[down]))
@@ -121,8 +122,9 @@ class CrosswordSolver:
                 for letter in word:
                     if not letter in list(string.ascii_uppercase) and not deleted:
                         newDomain.remove(word)
-                        deleted = True            
-            self.downClueDomains[clue] = newDomain
+                        deleted = True       
+            newDomain = sorted(newDomain, key=str.lower)     
+            self.downClueDomains[clue] = newDomain.copy()
             newDomain = []
 
         #acrossClues
