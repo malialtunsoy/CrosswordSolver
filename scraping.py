@@ -67,7 +67,7 @@ class Scraping:
         return searchMerriamWebster(toSearch)
 
     def getSynonyms(self, toSearch):
-        return searchSynonyms(toSearch)
+        return searchSynonyms(toSearch, self.clues["across"], self.clues["down"])
 
     def cheat(self):
         for across in self.clues["across"]:

@@ -7,8 +7,8 @@ import cProfile
 import lxml
 import cchardet
 
-def searchSynonyms(clue):
-    tokens = combine_tokens(clue)
+def searchSynonyms(clue, acrossClues, downClues):
+    tokens = combine_tokens(clue, acrossClues, downClues)
     words = set()
     for word in tokens:
         if(contains_multiple_words(word)):
