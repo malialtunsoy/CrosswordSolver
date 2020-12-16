@@ -38,7 +38,6 @@ class LUMOSCrosswordSolver:
         
         with open('data.json', 'r') as fp:
             data = json.load(fp)
-
         with open('cellBlockArray.json', 'r') as fp:
             cellBlockArray = json.load(fp)
         with open('cellNumberArray.json', 'r') as fp:
