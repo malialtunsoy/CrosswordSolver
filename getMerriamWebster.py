@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import string
 from combineTokens import combine_tokens
 
+
 URL = "https://www.merriam-webster.com/dictionary/"
 
 
@@ -30,5 +31,3 @@ def searchMerriamWebster(query):
             string_results.add(' '.join(result.split()))
 
     return string_results
-
-
