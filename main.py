@@ -2,6 +2,7 @@ from requests.api import delete
 from scraping import Scraping
 from crosswordSolver import CrosswordSolver
 from nyTimesPuzzle import Connector
+from newSolver import newSolver
 import json
 
 class LUMOSCrosswordSolver:
@@ -17,6 +18,7 @@ class LUMOSCrosswordSolver:
 
     def run(self, ):
         #GET CROSSWORD PUZZLE
+        """
         nyTimesConnector = Connector("C:\Program Files (x86)/chromedriver.exe")
         nyTimesConnector.connectToPuzzle()
         self.cellNumberArray = nyTimesConnector.cellNumberArray
@@ -24,7 +26,7 @@ class LUMOSCrosswordSolver:
         self.cluesAcross = nyTimesConnector.cluesAcross
         self.cluesDown = nyTimesConnector.cluesDown
         self.cellAnswerArray = nyTimesConnector.cellAnswerArray
-
+        """
         self.setClues()
 
         #WEB SCRAPING AND SETTING DOMAINS
@@ -36,6 +38,15 @@ class LUMOSCrosswordSolver:
         
         with open('data.json', 'r') as fp:
             data = json.load(fp)
+
+        with open('cellBlockArray.json', 'r') as fp:
+            cellBlockArray = json.load(fp)
+        with open('cellNumberArray.json', 'r') as fp:
+            cellNumberArray = json.load(fp)
+        with open('clueAcross.json', 'r') as fp:
+            cluesAcross = json.load(fp)
+        with open('cluesDown.json', 'r') as fp:
+            cluesDown = json.load(fp)
         
         """
         with open('cellBlockArray.json', 'w') as fp:
@@ -47,7 +58,8 @@ class LUMOSCrosswordSolver:
         with open('cluesDown.json', 'w') as fp:
             json.dump(self.cluesDown, fp,  indent=4)
         """
-        puzzleSolver = CrosswordSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, data)#webScrapper.domains)
+        #puzzleSolver = CrosswordSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, data)#webScrapper.domains)
+        puzzleSolver = newSolver(cellBlockArray, cellNumberArray,cluesDown, cluesAcross, data)#webScrapper.domains)
         
         #DRAW GUI
 
