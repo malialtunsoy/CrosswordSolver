@@ -14,9 +14,9 @@ class Connector:
     def connectToPuzzle(self):
         separtor = "============================\n"
         print(separtor , "CONNECTING TO THE WEBSITE\n"+ separtor)
-        options = webdriver.ChromeOptions() 
+        options = webdriver.ChromeOptions()
         options.add_experimental_option("excludeSwitches", ["enable-logging"])
-        driver = webdriver.Chrome(self.PATH, options)
+        driver = webdriver.Chrome(self.PATH, options=options)
         driver.get("https://www.nytimes.com/crosswords/game/mini")
 
         """
