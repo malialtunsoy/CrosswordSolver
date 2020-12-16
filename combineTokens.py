@@ -17,7 +17,7 @@ def combine_tokens(clue, acrossClues, downClues):
     if len(doc.ents) != 0:
         tokens = list()
         for entity in doc.ents:
-            tokens.append(entity)
+            tokens.append(entity.text)
     else:
         clue = clue.lower()
         clue_without_punctuation = clue.translate(

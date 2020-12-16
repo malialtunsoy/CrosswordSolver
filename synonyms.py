@@ -19,8 +19,8 @@ def searchSynonyms(clue, acrossClues, downClues):
             r_mw = requests.get("https://www.merriam-webster.com/thesaurus/" + word.split()[0] + "%20" + word.split()[1])
 
             # Datamuse
-            r_dm = requests.get('https://api.datamuse.com/words?rel_syn={}+{}'.format(word.split()[0], word.split()[1]))
-            r_dm2 = requests.get('https://api.datamuse.com/words?ml={}+{}'.format(word.split()[0], word.split()[1]))
+            r_dm = requests.get('https://api.datamuse.com/words?rel_syn={}'.format(word))
+            r_dm2 = requests.get('https://api.datamuse.com/words?ml={}'.format(word))
 
         else:
             # Thesaurus.com
@@ -50,13 +50,20 @@ def searchSynonyms(clue, acrossClues, downClues):
             
         for i in soup.select('.thes-list.sim-list a'):
             words.add(str(i.string).lower())        
-        
+        count = 0
         results = r_dm.json()
         for result in results:
             words.add(result['word'])
+            count += 1
+            if count > 20:
+                break
         results = r_dm2.json()
+        count = 0
         for result in results:
             words.add(result['word'])
+            count += 1
+            if count > 20:
+                break
     return words
 
 

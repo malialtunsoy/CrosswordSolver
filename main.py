@@ -2,7 +2,7 @@ from requests.api import delete
 from scraping import Scraping
 from crosswordSolver import CrosswordSolver
 from nyTimesPuzzle import Connector
-from dfs import newSolver
+from newSolver import newSolver
 import json
 
 class LUMOSCrosswordSolver:
