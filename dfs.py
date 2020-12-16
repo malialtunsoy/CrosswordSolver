@@ -42,16 +42,25 @@ class newSolver:
         self.possibleGrids = []
     
         
-
+        self.idealGrids = []
     
         self.domains = {"across": [[],[],[],[],[]], "down": [[],[],[],[],[]]}
 
         self.cells = [[{"across": {}, "down":{}},{"across": {}, "down":{}},{"across": {}, "down":{}},{"across": {}, "down":{}},{"across": {}, "down":{}}] for r in range(5)]
 
-
+        
 
         self.setup()
+        self.printDomainLen()
+        input("GO")
         self.dfs(0, None)
+        
+        for grid in self.idealGrids:
+            self.printGrid(grid["grid"])
+            print("")
+
+        self.advanceGrids()
+        
         #with open('filteredDomains.json', 'w') as fp:
        #   json.dump(self.domains, fp,  indent=4)
        
@@ -638,9 +647,11 @@ class newSolver:
         return intersectedCells
 
     def dfs(self, level, grid):
-        if level > 0 :
-            self.printGrid(grid["grid"])
+        
+        if level > 4 :
+            self.isGridIdeal(grid)
             
+        
 
         possibleGrids = []
         if level == 0:
@@ -660,4 +671,32 @@ class newSolver:
         if count == 25:
             return True
         return False
+    def isGridSolvedRaw(self, grid):
+            count = 0
+            for i in range(0,5):
+                for j in range(0,5):
+                    if grid[i][j] != "":
+                        count += 1
+            if count == 25:
+                return True
+            return False
+
+    def isGridIdeal(self, grid):
+        count = 0
+        for i in range(0,5):
+            for j in range(0,5):
+                if grid["grid"][i][j] != "":
+                    count += 1
+        if count > 20:
+            self.idealGrids.append(grid)
+        return False
+    """
+    def advanceGrids(self):
+        for grid in self.idealGrids:
+            for row in range(0,5):
+                for col in range(0,5):
+                    if grid["grid"][row][col] == "":
+                        for letter in string.ascii_uppercase:
+    """               
+
 
