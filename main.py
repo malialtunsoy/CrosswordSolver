@@ -18,7 +18,7 @@ class LUMOSCrosswordSolver:
 
     def run(self, ):
         #GET CROSSWORD PUZZLE
-        """
+        
         nyTimesConnector = Connector("C:\Program Files (x86)/chromedriver.exe")
         nyTimesConnector.connectToPuzzle()
         self.cellNumberArray = nyTimesConnector.cellNumberArray
@@ -28,7 +28,7 @@ class LUMOSCrosswordSolver:
         self.cellAnswerArray = nyTimesConnector.cellAnswerArray
         
         self.setClues()
-        """
+        
         #WEB SCRAPING AND SETTING DOMAINS
         print("===================\nWEB SCRAPING\n===================")
         webScrapper = Scraping(self.clues, self.cellAnswerArray, self.cellNumberArray)
@@ -59,10 +59,10 @@ class LUMOSCrosswordSolver:
             json.dump(self.cluesDown, fp,  indent=4)
         with open('data.json', 'w') as fp:
             json.dump(webScrapper.domains, fp,  indent=4)
-        """
+        
         #puzzleSolver = CrosswordSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, data)#webScrapper.domains)
-        puzzleSolver = newSolver(cellBlockArray, cellNumberArray,cluesDown, cluesAcross, data)#webScrapper.domains)
-        #puzzleSolver = newSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, webScrapper.domains)
+        #puzzleSolver = newSolver(cellBlockArray, cellNumberArray,cluesDown, cluesAcross, data)#webScrapper.domains)
+        puzzleSolver = newSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, webScrapper.domains)
         
         #DRAW GUI
 
@@ -75,4 +75,3 @@ class LUMOSCrosswordSolver:
 lumos = LUMOSCrosswordSolver()
 lumos.run()
 #print(lumos.clues)
-"""

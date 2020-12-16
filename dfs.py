@@ -20,8 +20,8 @@ class newSolver:
         self.acrossClues = acrossClues
         self.initialDomains = copy.deepcopy(domains) #INITIAL
         
-        #with open('data.json', 'w') as fp:
-         #   json.dump(domains, fp,  indent=4)
+        with open('data.json', 'w') as fp:
+           json.dump(domains, fp,  indent=4)
         self.lengthOfDownClues = {}
         self.lengthOfAcrossClues = {}
         
@@ -49,20 +49,26 @@ class newSolver:
         self.cells = [[{"across": {}, "down":{}},{"across": {}, "down":{}},{"across": {}, "down":{}},{"across": {}, "down":{}},{"across": {}, "down":{}}] for r in range(5)]
 
         
-
+        self.printDomainLen()
+        input("FILTER")
+        
         self.setup()
+        #with open('filteredDomains.json', 'w') as fp:
+        #    json.dump(self.domains, fp,  indent=4)
+        self.printDomainss()
         self.printDomainLen()
         input("GO")
+
+
         self.dfs(0, None)
         
         for grid in self.idealGrids:
             self.printGrid(grid["grid"])
             print("")
 
-        self.advanceGrids()
+        #self.advanceGrids()
         
-        #with open('filteredDomains.json', 'w') as fp:
-       #   json.dump(self.domains, fp,  indent=4)
+        
        
         #self.tempDomains = copy.deepcopy(self.domains) #TEMP
         #self.tempCells = copy.deepcopy(self.cells)
@@ -649,8 +655,8 @@ class newSolver:
     def dfs(self, level, grid):
         
         if level > 4 :
+            #self.printGrid(grid["grid"])
             self.isGridIdeal(grid)
-            
         
 
         possibleGrids = []
@@ -687,7 +693,7 @@ class newSolver:
             for j in range(0,5):
                 if grid["grid"][i][j] != "":
                     count += 1
-        if count > 20:
+        if count > 17:
             self.idealGrids.append(grid)
         return False
     """

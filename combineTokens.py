@@ -29,7 +29,6 @@ def combine_tokens(clue, acrossClues, downClues):
         for i in range(number_of_tokens):
             if i != number_of_tokens -1:
                 tokens.append(tokens[i] + " " + tokens[i + 1])
-    print(tokens)
     return tokens
 
 
