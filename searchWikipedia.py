@@ -35,18 +35,18 @@ def searchWikipediat(clue):
     return text
 
 def searchWikipedia(clue):
-    tokens = combine_tokens(clue)
-    tokens.append(clue)
+    #tokens = combine_tokens(clue)
+    #tokens.append(clue)
     text = set()
-    for c in tokens:
-        c = c.translate(str.maketrans('', '', string.punctuation))
-        search_results = wikipedia.search(c, results=1)
-        for result in search_results:
-            try:
-                content = wikipedia.page(result + ".").content.translate(str.maketrans('', '', string.punctuation))
-                for w in content.split():
-                    text.add(w.lower())
-            except:
-                continue
+    #for c in tokens:
+    clue = clue.translate(str.maketrans('', '', string.punctuation))
+    search_results = wikipedia.search(clue, results=1)
+    for result in search_results:
+        try:
+            content = wikipedia.page(result + ".").summary.translate(str.maketrans('', '', string.punctuation))
+            for w in content.split():
+                text.add(w.lower())
+        except:
+            continue
 
     return text
