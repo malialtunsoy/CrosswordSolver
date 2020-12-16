@@ -130,6 +130,7 @@ class newSolver:
                 while changeMade:
                     changeMade = False
                     #Single Cell
+                    """
                     for row in range(0,5):
                         #if row not in self.neglectedWords["row"]: #--------------------
                         for col in range(0,5):
@@ -146,39 +147,82 @@ class newSolver:
                                     for word in self.cells[row][col]["down"][letter]:
                                         word.active = False
                                     changeMade = True
+                    """
                     #Quadra Cell
                     for row in range(0,4):
                         for col in range(0,4):
-                            mathced = False
-                            matchedTopLeft = []
-                            matchedTopRight = []
-                            matchedBottomLeft = []
-                            matchedBottomRight = []
+                            #input(str(row)+", "+str(col))
+                            matchedTopLeft = set()
+                            matchedTopRight = set()
+                            matchedBottomLeft = set()
+                            matchedBottomRight = set()
                             for TopLeft in string.ascii_uppercase:
                                 for TopRight in string.ascii_uppercase:
                                     for BottomLeft in string.ascii_uppercase:
                                         for BottomRight in string.ascii_uppercase:
-                                            
+                                            """
                                             if any(word in self.cells[row][col]["across"][TopLeft] for word in self.cells[row][col+1]["across"][TopRight]):
                                                 if any(word in self.cells[row+1][col]["across"][BottomLeft] for word in self.cells[row+1][col+1]["across"][BottomRight]):
                                                     if any(word in self.cells[row][col]["down"][TopLeft] for word in self.cells[row+1][col]["down"][BottomLeft]):
                                                         if any(word in self.cells[row][col+1]["down"][TopRight] for word in self.cells[row+1][col+1]["down"][BottomRight]):
-                                                            mathced = True
-                                                            matchedTopLeft.append(TopLeft)
-                                                            matchedTopRight.append(TopRight)
-                                                            matchedBottomLeft.append(BottomLeft)
-                                                            matchedBottomRight.append(BottomRight)
+                                                            matchedTopLeft.add(TopLeft)
+                                                            matchedBottomRight.add(BottomRight)
+                                            """
+                                            if any(word in self.getCurrentWords(row,col,"across",TopLeft) for word in self.getCurrentWords(row,col+1,"across",TopRight)):
+                                                if any(word in self.getCurrentWords(row+1,col,"across",BottomLeft) for word in self.getCurrentWords(row+1,col+1,"across",BottomRight)):
+                                                    if any(word in self.getCurrentWords(row,col,"down",TopLeft) for word in self.getCurrentWords(row+1,col,"down",BottomLeft)):
+                                                        if any(word in self.getCurrentWords(row,col+1,"down",TopRight) for word in self.getCurrentWords(row+1,col+1,"down",BottomRight)):
+                                                            matchedTopLeft.add(TopLeft)
+                                                            matchedTopRight.add(TopRight)
+                                                            matchedBottomLeft.add(BottomLeft)
+                                                            matchedBottomRight.add(BottomRight)
+                            def lexical(word):
+                                return word[0] 
+                            print(str(row)+", "+str(col))  
+                            print(matchedTopLeft)
+                            print(matchedTopRight)
+                            print(matchedBottomRight)
+                            print(matchedBottomLeft)
+                            #print(list(matchedTopLeft).sort(key=lexical))
+                            #print(list(matchedBottomRight).sort(key=lexical))
                             for letter in string.ascii_uppercase:
                                 if letter not in matchedTopLeft:
-                                    for word in self.cells[row][col]["across"][letter]:
-                                        word.active = False
-                                    for word in self.cells[row][col]["down"][letter]:
-                                        word.active = False
+                                    if self.getTrueFalse(row, col, "across", letter):
+                                        for word in self.cells[row][col]["across"][letter]:
+                                            word.active = False
+                                            changeMade = True
+                                    if self.getTrueFalse(row, col, "down", letter):
+                                        for word in self.cells[row][col]["down"][letter]:
+                                            word.active = False
+                                            changeMade = True
+                                if letter not in matchedTopRight:
+                                    if self.getTrueFalse(row, col+1, "across", letter):
+                                        for word in self.cells[row][col+1]["across"][letter]:
+                                            word.active = False
+                                            changeMade = True
+                                    if self.getTrueFalse(row, col+1, "down", letter):
+                                        for word in self.cells[row][col+1]["down"][letter]:
+                                            word.active = False
+                                            changeMade = True
                                 if letter not in matchedBottomRight:
-                                    for word in self.cells[row+1][col+1]["across"][letter]:
-                                        word.active = False
-                                    for word in self.cells[row+1][col+1]["down"][letter]:
-                                        word.active = False
+                                    if self.getTrueFalse(row+1, col+1, "across", letter):
+                                        for word in self.cells[row+1][col+1]["across"][letter]:
+                                            word.active = False
+                                            changeMade = True
+                                    if self.getTrueFalse(row+1, col+1, "down", letter):
+                                        for word in self.cells[row+1][col+1]["down"][letter]:
+                                            word.active = False
+                                            changeMade = True
+                                if letter not in matchedBottomLeft:
+                                    if self.getTrueFalse(row+1, col, "across", letter):
+                                        for word in self.cells[row+1][col]["across"][letter]:
+                                            word.active = False
+                                            changeMade = True
+                                    if self.getTrueFalse(row+1, col, "down", letter):
+                                        for word in self.cells[row+1][col]["down"][letter]:
+                                            word.active = False
+                                            changeMade = True
+                                
                                 
                                 
 
@@ -208,6 +252,13 @@ class newSolver:
             if word.active:
                 return True
         return False
+
+    def getCurrentWords(self, row, col, acrossDown, letter):
+        words = []
+        for word in self.cells[row][col][acrossDown][letter]:
+            if word.active:
+                words.append(word)
+        return words
 
 
 
