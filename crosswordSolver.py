@@ -10,8 +10,8 @@ class CrosswordSolver:
         self.acrossClues = acrossClues
         self.initialDomains = copy.deepcopy(domains) #INITIAL
         
-        #with open('data.json', 'w') as fp:
-         #   json.dump(domains, fp,  indent=4)
+        with open('data.json', 'w') as fp:
+           json.dump(domains, fp,  indent=4)
         self.lengthOfDownClues = {}
         self.lengthOfAcrossClues = {}
         
@@ -34,8 +34,8 @@ class CrosswordSolver:
         self.wordLengthCalculator()    
         
         self.filterDomains()
-        #with open('filteredDomains.json', 'w') as fp:
-         #   json.dump(self.filteredDomains, fp,  indent=4)
+        with open('filteredDomains.json', 'w') as fp:
+           json.dump(self.filteredDomains, fp,  indent=4)
         self.tempDomains = copy.deepcopy(self.filteredDomains) #TEMP
         for down in self.filteredDomains["down"]:
             print(down, self.filteredDomains["down"][down])

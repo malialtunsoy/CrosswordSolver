@@ -29,15 +29,15 @@ class LUMOSCrosswordSolver:
 
         #WEB SCRAPING AND SETTING DOMAINS
         print("===================\nWEB SCRAPING\n===================")
-        #webScrapper = Scraping(self.clues, self.cellAnswerArray, self.cellNumberArray)
-        #webScrapper.setDomains()
+        webScrapper = Scraping(self.clues, self.cellAnswerArray, self.cellNumberArray)
+        webScrapper.setDomains()
         #SOLVE THE PUZZLE
         print("===================\nSOLVING THE PUZZLE\n===================")
-        
+        """
         with open('data.json', 'r') as fp:
             data = json.load(fp)
-        
         """
+        
         with open('cellBlockArray.json', 'w') as fp:
             json.dump(self.cellBlockArray, fp,  indent=4)
         with open('cellNumberArray.json', 'w') as fp:
@@ -46,8 +46,8 @@ class LUMOSCrosswordSolver:
             json.dump(self.cluesAcross, fp,  indent=4)
         with open('cluesDown.json', 'w') as fp:
             json.dump(self.cluesDown, fp,  indent=4)
-        """
-        puzzleSolver = CrosswordSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, data)#webScrapper.domains)
+        
+        puzzleSolver = CrosswordSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, webScrapper.domains)
         
         #DRAW GUI
 
