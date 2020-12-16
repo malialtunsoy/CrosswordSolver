@@ -26,9 +26,9 @@ class LUMOSCrosswordSolver:
         self.cluesAcross = nyTimesConnector.cluesAcross
         self.cluesDown = nyTimesConnector.cluesDown
         self.cellAnswerArray = nyTimesConnector.cellAnswerArray
-        """
+        
         self.setClues()
-
+        """
         #WEB SCRAPING AND SETTING DOMAINS
         print("===================\nWEB SCRAPING\n===================")
         #webScrapper = Scraping(self.clues, self.cellAnswerArray, self.cellNumberArray)
@@ -56,9 +56,12 @@ class LUMOSCrosswordSolver:
             json.dump(self.cluesAcross, fp,  indent=4)
         with open('cluesDown.json', 'w') as fp:
             json.dump(self.cluesDown, fp,  indent=4)
+        with open('data.json', 'w') as fp:
+            json.dump(webScrapper.domains, fp,  indent=4)
         """
         #puzzleSolver = CrosswordSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, data)#webScrapper.domains)
         puzzleSolver = newSolver(cellBlockArray, cellNumberArray,cluesDown, cluesAcross, data)#webScrapper.domains)
+        #puzzleSolver = newSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, webScrapper.domains)
         
         #DRAW GUI
 

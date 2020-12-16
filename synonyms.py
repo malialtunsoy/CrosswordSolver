@@ -13,7 +13,7 @@ def searchSynonyms(clue):
     for word in tokens:
         if(contains_multiple_words(word)):
             # Thesaurus.com
-            r_th = requests.get("https://www.thesaurus.com/browse/" + word.split()[0] + "%20" + word.split()[1])
+            #r_th = requests.get("https://www.thesaurus.com/browse/" + word.split()[0] + "%20" + word.split()[1])
 
             # Merriam webster
             r_mw = requests.get("https://www.merriam-webster.com/thesaurus/" + word.split()[0] + "%20" + word.split()[1])
@@ -24,7 +24,7 @@ def searchSynonyms(clue):
 
         else:
             # Thesaurus.com
-            r_th = requests.get("https://www.thesaurus.com/browse/" + word)
+            #r_th = requests.get("https://www.thesaurus.com/browse/" + word)
 
             # Merriam webster
             r_mw = requests.get("https://www.merriam-webster.com/thesaurus/" + word)
@@ -32,14 +32,14 @@ def searchSynonyms(clue):
             # Datamuse
             r_dm = requests.get('https://api.datamuse.com/words?rel_syn={}'.format(word))
             r_dm2 = requests.get('https://api.datamuse.com/words?ml={}'.format(word))
-
+        """
         soup = BeautifulSoup(r_th.text, 'lxml')
         texts = soup.select('.MainContentContainer.css-cv252o.e1h3b0ep0 a')
         for i in texts:
             for each in i.text.split():
                 each = each.translate(str.maketrans('', '', string.punctuation))
                 words.add(each.lower())
-
+        """
         soup = BeautifulSoup(r_mw.text, 'lxml')
 
         for i in soup.select('.thes-list.syn-list a'):

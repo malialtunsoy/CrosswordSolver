@@ -27,15 +27,18 @@ class newSolver:
         self.locationOfDownClues = {}
         self.locationOfAcrossClues = {}
 
+        self.filteredDomains = {"down": {}, "across": {}} #FILTERED
+
         self.neglectedWords = {"row": [], "col": []} 
         self.neglectedWordsArray = []
+        
         self.count = 0
 
-        self.bestSolution = {"down": {}, "across": {}, "find": 0}
+        self.bestSolution = {"across": [[],[],[],[],[]], "down": [[],[],[],[],[]], "find":0}
 
         self.solvedPuzzle = []
     
-        self.filteredDomains = {"down": {}, "across": {}} #FILTERED
+        
 
     
         self.domains = {"across": [[],[],[],[],[]], "down": [[],[],[],[],[]]}
@@ -46,36 +49,22 @@ class newSolver:
 
         self.setup()
         #with open('filteredDomains.json', 'w') as fp:
-         #   json.dump(self.filteredDomains, fp,  indent=4)
+       #   json.dump(self.domains, fp,  indent=4)
        
         #self.tempDomains = copy.deepcopy(self.domains) #TEMP
         #self.tempCells = copy.deepcopy(self.cells)
         self.solver()
-        """
-        for down in self.filteredDomains["down"]:
-            print(down, self.filteredDomains["down"][down])
-        for across in self.filteredDomains["across"]:
-            print(across, self.filteredDomains["across"][across])
-        
-        
-        
-        print("Initial size of the down domains:")
-        for down in self.filteredDomains["down"]:
-            print(down, "length: ", len(self.filteredDomains["down"][down]))
-        print("Initial size of the across domains:")
-        for across in self.filteredDomains["across"]:
-            print(across, "length: ", len(self.filteredDomains["across"][across]))
-
-
-        self.solvePuzzle()
         self.printBestDomains()
+        
+        
         self.getAnswerGrid()
-        """
+        
         
     
     def setup(self):
         self.wordLengthCalculator()    
         self.filterDomains()
+        self.deleteDups()
         self.setDomains()
         self.setCells()
 
@@ -93,7 +82,12 @@ class newSolver:
                         self.domains["down"][i].append(word)
         
 
-
+    def reset(self):
+        for index in range(0,5):
+            for word in self.domains["across"][index]:
+                word.active = True
+            for word in self.domains["down"][index]:
+                word.active = True
 
     def setCells(self):
         for row in range(0,5):
@@ -118,35 +112,37 @@ class newSolver:
         #while puzzle is solved try more jokers
         while puzzleNotSolved:
             puzzleNotSolved = False
-            
+            """
             self.printDomainLen()
             self.printDomainss()
-            
+            """
+            self.reset()
+            print(self.neglectedWords)
             if self.changeNeglected():
                 changeMade = True
                 #Constraints
                 #self.printTempDomains()
-                input("go")
+                #input("go")
                 while changeMade:
                     changeMade = False
                     #Single Cell
-                    """
+                    
                     for row in range(0,5):
-                        #if row not in self.neglectedWords["row"]: #--------------------
-                        for col in range(0,5):
-                            #if col not in self.neglectedWords["col"]: #--------------------
-                            for letter in string.ascii_uppercase:
-                                #if len(self.cells[row][col]["across"][letter]) > 0 and len(self.cells[row][col]["down"][letter]) > 0:
-                                    #   continue
-                                if self.getTrueFalse(row, col, "across", letter) and not self.getTrueFalse(row, col, "down", letter):
-                                    for word in self.cells[row][col]["across"][letter]:
-                                        word.active = False
-                                    changeMade = True
-                                
-                                elif not self.getTrueFalse(row, col, "across", letter) and self.getTrueFalse(row, col, "down", letter):
-                                    for word in self.cells[row][col]["down"][letter]:
-                                        word.active = False
-                                    changeMade = True
+                        if row not in self.neglectedWords["row"]: #--------------------
+                            for col in range(0,5):
+                                if col not in self.neglectedWords["col"]: #--------------------
+                                    for letter in string.ascii_uppercase:
+                                        #if len(self.cells[row][col]["across"][letter]) > 0 and len(self.cells[row][col]["down"][letter]) > 0:
+                                            #   continue
+                                        if self.getTrueFalse(row, col, "across", letter) and not self.getTrueFalse(row, col, "down", letter):
+                                            for word in self.cells[row][col]["across"][letter]:
+                                                word.active = False
+                                            changeMade = True
+                                        
+                                        elif not self.getTrueFalse(row, col, "across", letter) and self.getTrueFalse(row, col, "down", letter):
+                                            for word in self.cells[row][col]["down"][letter]:
+                                                word.active = False
+                                            changeMade = True
                     """
                     #Quadra Cell
                     for row in range(0,4):
@@ -160,14 +156,7 @@ class newSolver:
                                 for TopRight in string.ascii_uppercase:
                                     for BottomLeft in string.ascii_uppercase:
                                         for BottomRight in string.ascii_uppercase:
-                                            """
-                                            if any(word in self.cells[row][col]["across"][TopLeft] for word in self.cells[row][col+1]["across"][TopRight]):
-                                                if any(word in self.cells[row+1][col]["across"][BottomLeft] for word in self.cells[row+1][col+1]["across"][BottomRight]):
-                                                    if any(word in self.cells[row][col]["down"][TopLeft] for word in self.cells[row+1][col]["down"][BottomLeft]):
-                                                        if any(word in self.cells[row][col+1]["down"][TopRight] for word in self.cells[row+1][col+1]["down"][BottomRight]):
-                                                            matchedTopLeft.add(TopLeft)
-                                                            matchedBottomRight.add(BottomRight)
-                                            """
+                                            
                                             if any(word in self.getCurrentWords(row,col,"across",TopLeft) for word in self.getCurrentWords(row,col+1,"across",TopRight)):
                                                 if any(word in self.getCurrentWords(row+1,col,"across",BottomLeft) for word in self.getCurrentWords(row+1,col+1,"across",BottomRight)):
                                                     if any(word in self.getCurrentWords(row,col,"down",TopLeft) for word in self.getCurrentWords(row+1,col,"down",BottomLeft)):
@@ -224,21 +213,13 @@ class newSolver:
                                             changeMade = True
                                 
                                 
-                                
-
-                self.printDomainLen()
-                self.printDomainss()
-                input("done")                        
-                                            
+                    """            
+                  
+                                             
                 self.isItTheBestSolution()
-                """
-                if self.count < 2:
-                    self.printDomains()
-                    print("\n\n------------------\n")
-                """
+                
                 puzzleNotSolved = not self.isPuzzleSolved()
-                print(self.tempDomains)
-                input(self.neglectedWords)
+                #input(self.neglectedWords)
 
                 #with open('row1neglect.json', 'w') as fp:
                 #    json.dump(self.tempDomains, fp,  indent=4)
@@ -382,20 +363,20 @@ class newSolver:
             previousWord = ""
             for word in self.initialDomains["down"][clue].split():
                 word = self.filterHelper(word)
-                if word[len(word)-1] == "." or word[len(word)-1] == ","  or word[len(word)-1] == ":"  or word[len(word)-1] == ";"  or word[len(word)-1] == "+" or word[len(word)-1] == "?" or word[len(word)-1] == "!" or word[len(word)-1] == ")" or word[len(word)-1] == "}" or word[len(word)-1] == "]":
+                if word[len(word)-1] == "." or word[len(word)-1] == ","  or word[len(word)-1] == ":"  or word[len(word)-1] == ";"  or word[len(word)-1] == "+" or word[len(word)-1] == "?" or word[len(word)-1] == "!" or word[len(word)-1] == ")" or word[len(word)-1] == "}" or word[len(word)-1] == "]" :
                     word = word[0:len(word)-1]
-                if (len(word) == self.lengthOfDownClues[clue]): #if word lenght is valid
+                if (len(word) == self.lengthOfDownClues[clue]) and not self.checkDuplicates( clue, "down", word.upper()): #if word lenght is valid
                     newDomain.add(Word(word.upper(),"down", -1, clue,True))
                 prevPlusCur = previousWord + word
-                if (len(prevPlusCur) == self.lengthOfDownClues[clue]) and (prevPlusCur != word): #if two words next to each others total length is valid
+                if (len(prevPlusCur) == self.lengthOfDownClues[clue]) and (prevPlusCur != word) and not self.checkDuplicates( clue, "down", prevPlusCur.upper()): #if two words next to each others total length is valid
                     newDomain.add(Word(prevPlusCur.upper(),"down", -1, clue,True))
                 previousWord = word
-                if (len(word) == self.lengthOfDownClues[clue]+1) and (word[self.lengthOfDownClues[clue]] == "s"): #if the word ends with "s"
+                if (len(word) == self.lengthOfDownClues[clue]+1) and (word[self.lengthOfDownClues[clue]] == "s") and not self.checkDuplicates( clue, "down", word[0:self.lengthOfDownClues[clue]].upper()): #if the word ends with "s"
                     newDomain.add(Word(word[0:self.lengthOfDownClues[clue]].upper(),"down", -1, clue,True))
-                if ("'" in word) and (len( word[0:word.index("'")] ) == self.lengthOfDownClues[clue]):
+                if ("'" in word) and (len( word[0:word.index("'")] ) == self.lengthOfDownClues[clue]) and not self.checkDuplicates(clue, "down",word[0:word.index("'")].upper()):
                     newDomain.add(Word(word[0:word.index("'")].upper(),"down", -1, clue,True))
             for word in self.initialDomains["down"][clue].split("'"):
-                if (len(word) == self.lengthOfDownClues[clue]): #if word lenght is valid
+                if (len(word) == self.lengthOfDownClues[clue]) and not self.checkDuplicates( clue, "down", word.upper()): #if word lenght is valid
                     newDomain.add(Word(word.upper(),"down", -1, clue,True))
             newDomain = list(newDomain)
             for word in reversed(newDomain):
@@ -417,20 +398,20 @@ class newSolver:
             previousWord = ""
             for word in self.initialDomains["across"][clue].split():
                 word = self.filterHelper(word)
-                if word[len(word)-1] == "." or word[len(word)-1] == ","  or word[len(word)-1] == ":"  or word[len(word)-1] == ";"  or word[len(word)-1] == "+" or word[len(word)-1] == "?" or word[len(word)-1] == "!" or word[len(word)-1] == ")" or word[len(word)-1] == "}" or word[len(word)-1] == "]":
+                if word[len(word)-1] == "." or word[len(word)-1] == ","  or word[len(word)-1] == ":"  or word[len(word)-1] == ";"  or word[len(word)-1] == "+" or word[len(word)-1] == "?" or word[len(word)-1] == "!" or word[len(word)-1] == ")" or word[len(word)-1] == "}" or word[len(word)-1] == "]" :
                     word = word[0:len(word)-1]
-                if (len(word) == self.lengthOfAcrossClues[clue]): #if word lenght is valid
+                if (len(word) == self.lengthOfAcrossClues[clue]) and not self.checkDuplicates( clue, "across", word.upper()): #if word lenght is valid
                     newDomain.add(Word(word.upper(),"across", -1, clue,True))
                 prevPlusCur = previousWord + word
-                if (len(prevPlusCur) == self.lengthOfAcrossClues[clue]) and (prevPlusCur != word): #if two words next to each others total length is valid
+                if (len(prevPlusCur) == self.lengthOfAcrossClues[clue]) and (prevPlusCur != word) and not self.checkDuplicates( clue, "across", prevPlusCur.upper()): #if two words next to each others total length is valid
                     newDomain.add(Word(prevPlusCur.upper(),"across", -1, clue,True))
                 previousWord = word
-                if (len(word) == self.lengthOfAcrossClues[clue]+1) and (word[self.lengthOfAcrossClues[clue]] == "s"): #if the word ends with "s"
+                if (len(word) == self.lengthOfAcrossClues[clue]+1) and (word[self.lengthOfAcrossClues[clue]] == "s") and not self.checkDuplicates( clue, "across", word[0:self.lengthOfAcrossClues[clue]].upper()): #if the word ends with "s"
                     newDomain.add(Word(word[0:self.lengthOfAcrossClues[clue]].upper(),"across", -1, clue,True))
-                if ("'" in word) and (len( word[0:word.index("'")] ) == self.lengthOfAcrossClues[clue]):
+                if ("'" in word) and (len( word[0:word.index("'")] ) == self.lengthOfAcrossClues[clue]) and not self.checkDuplicates( clue, "across", word[0:word.index("'")].upper()):
                     newDomain.add(Word(word[0:word.index("'")].upper(),"across", -1, clue,True))
             for word in self.initialDomains["across"][clue].split("'"):
-                if (len(word) == self.lengthOfAcrossClues[clue]): #if word lenght is valid
+                if (len(word) == self.lengthOfAcrossClues[clue]) and not self.checkDuplicates( clue, "across", word.upper()): #if word lenght is valid
                     newDomain.add(Word(word.upper(),"across", -1, clue,True))
             newDomain = list(newDomain)
             for word in reversed(newDomain):
@@ -445,6 +426,37 @@ class newSolver:
             #self.acrossClueDomains[clue] = newDomain
             self.filteredDomains["across"][clue] = copy.deepcopy(newDomain)
             newDomain = set()
+
+    
+    def checkDuplicates(self, clueIndex, acrossDown, wordToCompare):
+        if clueIndex in self.filteredDomains[acrossDown]:
+            for word in self.filteredDomains[acrossDown][clueIndex]:
+                if wordToCompare == word.word:
+                    return True
+        return False    
+
+    def deleteDups(self):
+        for key in self.filteredDomains["across"]:
+            for word in self.filteredDomains["across"][key]:
+                wordToCheck = word.word
+                wordCount = 0
+                for wordIn in reversed(self.filteredDomains["across"][key]):
+                    if wordToCheck == wordIn.word:
+                        wordCount += 1
+                        if wordCount > 1:
+                            self.filteredDomains["across"][key].remove(wordIn)
+
+        for key in self.filteredDomains["down"]:
+            for word in self.filteredDomains["down"][key]:
+                wordToCheck = word.word
+                wordCount = 0
+                for wordIn in reversed(self.filteredDomains["down"][key]):
+                    if wordToCheck == wordIn.word:
+                        wordCount += 1
+                        if wordCount > 1:
+                            self.filteredDomains["down"][key].remove(wordIn)
+
+
 
             
     def filterHelper(self, input):
@@ -487,7 +499,7 @@ class newSolver:
             if (row <= int(rowEnd)) and (row >= int(rowStart)) and (col == int(tempCol)):
                 wordIndex = row-rowStart
                 if option == "best":
-                    domains["down"] = {"index": wordIndex, "domain": self.bestSolution["down"][location], "loc": self.locationOfDownClues[location]}
+                    domains["down"] = {"index": wordIndex, "domain": self.getCurrentDomainWord("down",tempCol), "loc": self.locationOfDownClues[location]}
                 else:
                     domains["down"] = {"index": wordIndex, "domain": self.filteredDomains["down"][location], "loc": self.locationOfDownClues[location]}
         #across
@@ -499,68 +511,19 @@ class newSolver:
             if (col <= int(colEnd)) and (col >= int(colStart)) and (row == int(tempRow)):
                 wordIndex = col-colStart
                 if option == "best":
-                    domains["across"] = {"index": wordIndex, "domain": self.bestSolution["across"][location], "loc": self.locationOfAcrossClues[location]}
+                    domains["across"] = {"index": wordIndex, "domain": self.getCurrentDomainWord("across",tempRow), "loc": self.locationOfAcrossClues[location]}
                 else:
                     domains["across"] = {"index": wordIndex, "domain": self.filteredDomains["across"][location], "loc": self.locationOfAcrossClues[location]}
         return domains
 
-    def solvePuzzle(self):
-        puzzleNotSolved = True
-        #while puzzle is solved try more jokers
-        while puzzleNotSolved:
-            puzzleNotSolved = False
-            
-            self.tempDomains = copy.deepcopy(self.filteredDomains)
-            
-            if self.changeNeglected():
-                changeMade = True
-                #Constraints
-                while changeMade:
-                    changeMade = False
-                    for row in range(0,5):
-                        if row not in self.neglectedWords["row"]: #--------------------
-                            for col in range(0,5):
-                                if col not in self.neglectedWords["col"]: #--------------------
-                                    if self.getTheRelatedDomainOfThisCell(row,col,"") != {}:
-                                        domains = self.getTheRelatedDomainOfThisCell(row,col,"")
-                                    
-                                        #print(domains)
-                                        for downWord in domains["down"]["domain"]:
-                                            matched = False
-                                            for acrossWord in domains["across"]["domain"]:
-                                                if downWord[domains["down"]["index"]] == acrossWord[domains["across"]["index"]]:
-                                                    matched = True
-                                            if matched == False:
-                                                domains["down"]["domain"].remove(downWord)
-                                                #print(downWord)
-                                                changeMade = True
-
-                                        for acrossWord in domains["across"]["domain"]:
-                                            matched = False
-                                            for downWord in domains["down"]["domain"]:
-                                                if downWord[domains["down"]["index"]] == acrossWord[domains["across"]["index"]]:
-                                                    matched = True
-                                            if matched == False:
-                                                domains["across"]["domain"].remove(acrossWord)
-                                                #print(acrossWord)
-                                                changeMade = True
-                                        #input(self.count)
-                                            
-                self.isItTheBestSolution()
-                """
-                if self.count < 2:
-                    self.printDomains()
-                    print("\n\n------------------\n")
-                """
-                puzzleNotSolved = not self.isPuzzleSolved()
-                print(self.tempDomains)
-                input(self.neglectedWords)
-
-                #with open('row1neglect.json', 'w') as fp:
-                #    json.dump(self.tempDomains, fp,  indent=4)
-            else: 
-                return False
-                
+   
+    def getCurrentDomainWord(self, acrossDown, index):
+        words = []
+        for word in self.bestSolution[acrossDown][index]:
+            if word.active:
+                words.append(word)
+        return words
+    
     def getAnswerGrid(self):
         if self.bestSolution["find"] != 0:
             answerGrid = [["","","","",""],["","","","",""],["","","","",""],["","","","",""],["","","","",""]]
@@ -571,12 +534,14 @@ class newSolver:
                         if domains == {}:
                             answerGrid[row][col] = "-"
                         else:
-                            if len(domains["across"]["domain"]) == 1:
-                                for colIndex in range(domains["across"]["loc"]["start"]["col"], domains["across"]["loc"]["start"]["col"] + len(domains["across"]["domain"][0])):
-                                    answerGrid[row][colIndex] = domains["across"]["domain"][0][colIndex - domains["across"]["loc"]["start"]["col"]]                            
-                            if len(domains["down"]["domain"]) == 1:
-                                for rowIndex in range(domains["down"]["loc"]["start"]["row"], domains["down"]["loc"]["start"]["row"] + len(domains["down"]["domain"][0])):
-                                    answerGrid[rowIndex][col] = domains["down"]["domain"][0][rowIndex - domains["down"]["loc"]["start"]["row"]]
+                            if len(self.getCurrentDomainWord("across", row)) == 1:
+                                for colIndex in range(domains["across"]["loc"]["start"]["col"], domains["across"]["loc"]["start"]["col"] + len(domains["across"]["domain"][0].word)):
+                                    answerGrid[row][colIndex] = domains["across"]["domain"][0].word[colIndex - domains["across"]["loc"]["start"]["col"]]  
+                            if len(self.getCurrentDomainWord("down", col)) == 1:
+                                for rowIndex in range(domains["down"]["loc"]["start"]["row"], domains["down"]["loc"]["start"]["row"] + len(domains["down"]["domain"][0].word)):
+                                    answerGrid[rowIndex][col] = domains["down"]["domain"][0].word[rowIndex - domains["down"]["loc"]["start"]["row"]]
+
+                            
             for row in range(0,5):
                 for col in range(0,5):
                     if answerGrid[row][col] == "":
@@ -597,12 +562,12 @@ class newSolver:
                     if domains == {}:
                         answerGrid[row][col] = "-"
                     else:
-                        if len(domains["across"]["domain"]) == 1:
-                            for colIndex in range(domains["across"]["loc"]["start"]["col"], domains["across"]["loc"]["start"]["col"] + len(domains["across"]["domain"][0])):
-                                answerGrid[row][colIndex] = domains["across"]["domain"][0][colIndex - domains["across"]["loc"]["start"]["col"]]                            
-                        if len(domains["down"]["domain"]) == 1:
-                            for rowIndex in range(domains["down"]["loc"]["start"]["row"], domains["down"]["loc"]["start"]["row"] + len(domains["down"]["domain"][0])):
-                                answerGrid[rowIndex][col] = domains["down"]["domain"][0][rowIndex - domains["down"]["loc"]["start"]["row"]]
+                        if len(self.getCurrentDomainWord("across", row)) == 1:
+                            for colIndex in range(domains["across"]["loc"]["start"]["col"], domains["across"]["loc"]["start"]["col"] + len(domains["across"]["domain"][0].word)):
+                                answerGrid[row][colIndex] = domains["across"]["domain"][0].word[colIndex - domains["across"]["loc"]["start"]["col"]]                            
+                        if len(self.getCurrentDomainWord("down", col)) == 1:
+                            for rowIndex in range(domains["down"]["loc"]["start"]["row"], domains["down"]["loc"]["start"]["row"] + len(domains["down"]["domain"][0].word)):
+                                answerGrid[rowIndex][col] = domains["down"]["domain"][0].word[rowIndex - domains["down"]["loc"]["start"]["row"]]
         for row in range(0,5):
             for col in range(0,5):
                 if answerGrid[row][col] == "":
@@ -619,13 +584,21 @@ class newSolver:
             print(i, self.tempDomains["across"][i])
     
     def printBestDomains(self):
-        print("\n Domain of down clues")
-        for i in self.bestSolution["down"]:
-            print(i, self.bestSolution["down"][i])
+        print("Across")
+        for col in range(0,5):
+            print(str(col) + ": ", end=" ")
+            for word in self.bestSolution["across"][col]:
+                if word.active:
+                    print(word.word, end=" ")
+            print("\n")
 
-        print("\n Domain of across clues")
-        for i in self.bestSolution["across"]:
-            print(i, self.bestSolution["across"][i])
+        print("\nDown")
+        for row in range(0,5):
+            print(str(row) + ": ", end=" ")
+            for word in self.bestSolution["down"][row]:
+                if word.active:
+                    print(word.word, end=" ")
+            print("\n")
 
     def changeNeglected(self):
         if self.count == 0:
@@ -649,15 +622,24 @@ class newSolver:
     
     def isItTheBestSolution(self):
         count = 0
-        for down in self.tempDomains["down"]:
-            if len(self.tempDomains["down"][down]) == 1:
-                count = count + 1
-        for across in self.tempDomains["across"]:
-            if len(self.tempDomains["across"][across]) == 1:
-                count = count + 1
+        for row in range(0,5):
+            wordCount = 0
+            for word in self.domains["across"][row]:
+                if word.active:
+                    wordCount += 1
+            if wordCount == 1:
+                count += 1
+        for col in range(0,5):
+            wordCount = 0
+            for word in self.domains["down"][col]:
+                if word.active:
+                    wordCount += 1
+            if wordCount == 1:
+                count += 1
+
         if count > self.bestSolution["find"]:
-            for down in self.tempDomains["down"]:
-                self.bestSolution["down"][down] =  self.tempDomains["down"][down]
-            for across in self.tempDomains["across"]:
-                self.bestSolution["across"][across] =  self.tempDomains["across"][across]
+            for row in range(0,5):
+                self.bestSolution["across"][row] =  copy.deepcopy(self.domains["across"][row])
+            for col in range(0,5):
+                self.bestSolution["down"][col] =  copy.deepcopy(self.domains["down"][col])
             self.bestSolution["find"] = count
