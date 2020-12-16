@@ -19,7 +19,7 @@ def searchSynonyms(clue):
             r_mw = requests.get("https://www.merriam-webster.com/thesaurus/" + word.split()[0] + "%20" + word.split()[1])
 
             # Datamuse
-            r_dm = requests.get('https://api.datamuse.com/words?ml={}+{}'.format(word.split()[0], word.split()[1]))
+            r_dm = requests.get('https://api.datamuse.com/words?rel_syn={}+{}'.format(word.split()[0], word.split()[1]))
             r_dm2 = requests.get('https://api.datamuse.com/words?ml={}+{}'.format(word.split()[0], word.split()[1]))
 
         else:

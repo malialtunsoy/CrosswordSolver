@@ -38,6 +38,8 @@ class newSolver:
         self.bestSolution = {"across": [[],[],[],[],[]], "down": [[],[],[],[],[]], "find":0}
 
         self.solvedPuzzle = []
+
+        self.possibleGrids = []
     
         
 
@@ -49,6 +51,7 @@ class newSolver:
 
 
         self.setup()
+        self.dfs(0, None)
         #with open('filteredDomains.json', 'w') as fp:
        #   json.dump(self.domains, fp,  indent=4)
        
@@ -549,7 +552,7 @@ class newSolver:
 
 
     
-    def getPossibleGrids(self, grid, lastAdded, emptyCells, accrossDown):
+    def getPossibleGrids(self, grid, lastAdded, emptyCells, accrossDown): 
         possibleGrids = []
         for cell in lastAdded:
             possibleWords = []
@@ -572,16 +575,18 @@ class newSolver:
                         if word not in intersectedWords:
                             possibleWords.remove(word)
 
-            
+            tempEmptyCell = copy.deepcopy(emptyCells)
             for word in possibleWords:
                 for filledCell in word.cells:
-                    if filledCell in emptyCells:
-                        emptyCells.remove(filledCell)
+                    if filledCell in tempEmptyCell:
+                        tempEmptyCell.remove(filledCell)
                 if accrossDown == "across":
-                    newGrid = {"grid":self.gridWordAdder(copy.deepcopy(grid), word.word, word.cells), "lastAdded": word.cells, "emptyCells": copy.deepcopy(emptyCells) , "acrossDown": "down" }
+                    newGrid = {"grid":self.gridWordAdder(copy.deepcopy(grid), word.word, word.cells), "lastAdded": word.cells, "emptyCells": copy.deepcopy(tempEmptyCell) , "acrossDown": "down" }
                 else:
-                    newGrid = {"grid":self.gridWordAdder(copy.deepcopy(grid), word.word, word.cells), "lastAdded": word.cells, "emptyCells": copy.deepcopy(emptyCells) , "acrossDown": "across" }
-                possibleGrids.append(newGrid)
+                    newGrid = {"grid":self.gridWordAdder(copy.deepcopy(grid), word.word, word.cells), "lastAdded": word.cells, "emptyCells": copy.deepcopy(tempEmptyCell) , "acrossDown": "across" }
+                if grid != newGrid["grid"] and newGrid["grid"] not in self.possibleGrids:
+                    possibleGrids.append(newGrid)
+                    self.possibleGrids.append(newGrid["grid"])
             
         return possibleGrids
 
@@ -596,20 +601,22 @@ class newSolver:
                 else:
                     grid[i][j] = ""
                     emptyCells.append((i,j))
-
+        
         for row in range(0,5):
+            tempEmptyCell = copy.deepcopy(emptyCells)
             for word in self.domains["across"][row]:
                 for filledCell in word.cells:
-                    if filledCell in emptyCells:
-                        emptyCells.remove(filledCell)
-                possibleGrids.append({"grid":self.gridWordAdder(copy.deepcopy(grid), word.word, word.cells), "lastAdded": word.cells, "emptyCells": copy.deepcopy(emptyCells) , "acrossDown": "across" })
+                    if filledCell in tempEmptyCell:
+                        tempEmptyCell.remove(filledCell)
+                possibleGrids.append({"grid":self.gridWordAdder(copy.deepcopy(grid), word.word, word.cells), "lastAdded": word.cells, "emptyCells": copy.deepcopy(tempEmptyCell) , "acrossDown": "across" })
 
         for col in range(0,5):
+            tempEmptyCell = copy.deepcopy(emptyCells)
             for word in self.domains["down"][col]:
                 for filledCell in word.cells:
-                    if filledCell in emptyCells:
-                        emptyCells.remove(filledCell)
-                possibleGrids.append({"grid":self.gridWordAdder(copy.deepcopy(grid), word.word, word.cells), "lastAdded": word.cells, "emptyCells": copy.deepcopy(emptyCells) , "acrossDown": "down" })
+                    if filledCell in tempEmptyCell:
+                        tempEmptyCell.remove(filledCell)
+                possibleGrids.append({"grid":self.gridWordAdder(copy.deepcopy(grid), word.word, word.cells), "lastAdded": word.cells, "emptyCells": copy.deepcopy(tempEmptyCell) , "acrossDown": "down" })
             
         return possibleGrids
 
@@ -630,4 +637,27 @@ class newSolver:
                 intersectedCells.append(cell)
         return intersectedCells
 
-    
+    def dfs(self, level, grid):
+        if level > 0 :
+            self.printGrid(grid["grid"])
+            
+
+        possibleGrids = []
+        if level == 0:
+            possibleGrids = self.getInitialGrids()
+        else:
+            possibleGrids = self.getPossibleGrids(grid["grid"], grid["lastAdded"], grid["emptyCells"], grid["acrossDown"])
+        
+        for grid in possibleGrids:
+            self.dfs(level+1, grid)
+
+    def isGridSolved(self, grid):
+        count = 0
+        for i in range(0,5):
+            for j in range(0,5):
+                if grid["grid"][i][j] != "":
+                    count += 1
+        if count == 25:
+            return True
+        return False
+
