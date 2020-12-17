@@ -1,25 +1,16 @@
 import nltk
 import string
 from nltk.corpus import stopwords
-import spacy
-from spacy.tokenizer import Tokenizer
 
 stop_words = set(stopwords.words('english'))
 
+# Processes the clue to generate token pairs to be later used in scraping
+# Returns all the possible pairs of tokens for a clue
 def combine_tokens(clue, acrossClues, downClues):
-    
+    # Checks if the clue is in the form of "See X-Down" or "See X-Across"
     if "See" in clue:
         clue = getPointedClue(clue, acrossClues, downClues)
 
-    nlp = spacy.load("en_core_web_sm")
-    doc = nlp(clue)
-    """
-    if len(doc.ents) != 0:
-        tokens = list()
-        for entity in doc.ents:
-            tokens.append(entity.text)
-    else:
-    """
     clue = clue.lower()
     #clue = clue.replace("-", " ")
     clue_without_punctuation = clue.translate(
@@ -27,15 +18,13 @@ def combine_tokens(clue, acrossClues, downClues):
     tokens = nltk.word_tokenize(clue_without_punctuation)
     tokens = [w for w in tokens if not w in stop_words]
     number_of_tokens = len(tokens)
-    # print(tokens)
     for i in range(number_of_tokens):
-        if i != number_of_tokens -1:
+        if i != number_of_tokens - 1:
             tokens.append(tokens[i] + " " + tokens[i + 1])
-    #print(tokens)
+    # print(tokens)
     return tokens
 
-
-    
+# Used to find the clues that are in the form of "See X-Down" or "See X-Across"
 def getPointedClue(clue, acrossClues, downClues):
     pointedClue = ""
     if "Down" in clue:
@@ -44,6 +33,7 @@ def getPointedClue(clue, acrossClues, downClues):
         pointedClue = acrossClues[clue[4]]
     return pointedClue
 
+# Example test
 """
 acrossClues = {"1": "Removes politely, as a hat", "2": "Rainy month", "3": "___ Tanden, Biden's pick to lead the O.M.B.", 
                     "4": "Salad green with a peppery taste", "5": 'Subject of the famous photo "The Blue Marble"'}
@@ -54,9 +44,9 @@ downClues = {"1": "See 4-Down", "2": "Lincoln Center performance", "3":"Less res
 
 print("DOWN CLUES")
 for key in downClues:
-    combine_tokens(downClues[key], acrossClues, downClues)
+    print(combine_tokens(downClues[key], acrossClues, downClues))
 
 print("ACROSS CLUES")
 for key in acrossClues:
-    combine_tokens(acrossClues[key], acrossClues, downClues)
+    print(combine_tokens(acrossClues[key], acrossClues, downClues))
 """
