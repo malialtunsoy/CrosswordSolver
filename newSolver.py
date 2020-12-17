@@ -242,6 +242,8 @@ class NewSolver:
                 print()
 
     def wordLengthCalculator(self):
+        """For every clue, calculates the row and column points where the answer for that clue starts and finishes in the grid. The values are stored inside 'locationOfDownClues' and 'locationOfAcrossClues' in the form of a dictionary.
+        """
         # downClues
         for clue in self.downClues:
             clueNumber = clue[0]
@@ -285,6 +287,11 @@ class NewSolver:
                 "row": rowIndex, "col": colIndex}, "end": {"row": rowIndex, "col": colIndex+wordLength-1}}
 
     def filterDomains(self):
+        """Filters the words that comes from the web scraping in order to place them into domains that belong to each clue.
+            It checks for length, for example for an across clue with 4 available spaces in the grid, only words with 4 letters pass.
+            It checks for spaces around the words and duplicate words and remove them from the domain.
+            Also for the two word combinations, if the domain includes two words that do not exceed the length constraint when combined, it combines them into a new word.
+        """
         # downClues
         newDomain = set()
         for clue in self.initialDomains["down"]:
@@ -372,6 +379,8 @@ class NewSolver:
             newDomain = set()
 
     def checkDuplicates(self, clueIndex, acrossDown, wordToCompare):
+        """Check for duplicates inside the domain in order to eliminate them.
+        """
         if clueIndex in self.filteredDomains[acrossDown]:
             for word in self.filteredDomains[acrossDown][clueIndex]:
                 if wordToCompare == word.word:
@@ -379,6 +388,8 @@ class NewSolver:
         return False
 
     def deleteDups(self):
+        """Deletes duplicate words from the domains.
+        """
         for key in self.filteredDomains["across"]:
             for word in self.filteredDomains["across"][key]:
                 wordToCheck = word.word
@@ -400,6 +411,11 @@ class NewSolver:
                             self.filteredDomains["down"][key].remove(wordIn)
 
     def filterHelper(self, input):
+        """Converts any numerical value into string form.
+
+        Args:
+            input (char): A number inside a string which wil be converted into string form.
+        """
         if input == "0":
             return "ZERO"
         if input == "1":
@@ -429,6 +445,15 @@ class NewSolver:
         return input
 
     def getTheRelatedDomainOfThisCell(self, row, col, option):
+        """For a given cell in the grid, find the clue answers that pass through that cell and return the domains of those clue answers.
+
+        Args:
+            row (int): row index of given cell
+            col (int): col index of given cell
+
+        Returns:
+            Returns the domains (all possible words) for the clue answers that pass through the given cell.
+        """
         domains = {}
         # down
         for location in self.locationOfDownClues:
