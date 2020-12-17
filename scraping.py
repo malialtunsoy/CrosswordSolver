@@ -1,4 +1,3 @@
-from getMerriamWebster import searchMerriamWebster
 from searchWikipedia import searchWikipedia
 from synonyms import searchSynonyms
 
