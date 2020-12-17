@@ -12,8 +12,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets, Qt
 from datetime import date
 from datetime import datetime
 
-
 class Ui_MainWindow(object):
+    """This is the main window class that contains every widget,grid and answer that we display to the screen. It was generated using PyQt UI interface, so every change made in the interface is displayed here in code.
+    """
     def setupUi(self, MainWindow, cellNumberArray, cellBlockArray, cluesAcross, cluesDown, cellAnswerArray, solved):
         MainWindow.setObjectName("LUMOS Puzzle Solver")
         MainWindow.resize(1127, 743)
@@ -85,11 +86,6 @@ class Ui_MainWindow(object):
         self.generateInitialGrid(MainWindow, self.cellBlockArray, self.widget, self.gridLayout_2, self.labels, self.gridList_1)
         self.revealAnswers(self.cellAnswerArray, self.labels)
 
-
-
-
-
-
         self.widget_right = QtWidgets.QWidget(self.frame_2)
         self.widget_right.setMinimumSize(QtCore.QSize(500, 500))
         self.widget_right.setStyleSheet("gridline-color: rgb(0, 0, 0);\n"
@@ -100,7 +96,6 @@ class Ui_MainWindow(object):
         self.widget_right.setObjectName("widget_right")
         self.widget_right.setSizePolicy(sizePolicy)
 
-
         self.gridLayout_right = QtWidgets.QGridLayout(self.widget_right)
         self.gridLayout_right.setContentsMargins(3, 3, 3, 3)
         self.gridLayout_right.setSpacing(0)
@@ -110,7 +105,6 @@ class Ui_MainWindow(object):
 
         self.generateInitialGrid(MainWindow, self.cellBlockArray, self.widget_right, self.gridLayout_right, self.labels_2, self.gridList_2)
         self.revealAnswers(self.solved, self.labels_2)
-
 
         self.horizontalLayout.addWidget(self.widget)
         self.widget_3 = QtWidgets.QWidget(self.frame_2)
@@ -176,14 +170,16 @@ class Ui_MainWindow(object):
     
     
     def retranslateUi(self, MainWindow):
+        """This method is also automatically generated in order to encode the text in the labels that we use, hence it takes a translate function. This function is called after the initial grids are generated.
+        """
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Lumos Puzzle Solver"))
         self.label.setText(_translate("MainWindow", "The Mini Crossword"))
-        self.generateLabelNumbers(MainWindow, self.cellNumberArray, _translate, self.labels)
-        self.generateLabelNumbers(MainWindow, self.cellNumberArray, _translate, self.labels_2)
-        __sortingEnabled = self.listWidget.isSortingEnabled()
+        self.generateLabelNumbers(MainWindow, self.cellNumberArray, _translate, self.labels) #Generate numbers that will be displayed on the grid for the first grid.
+        self.generateLabelNumbers(MainWindow, self.cellNumberArray, _translate, self.labels_2) #Generate numbers that will be displayed on the grid for the second grid.
+        __sortingEnabled = self.listWidget.isSortingEnabled() 
         self.listWidget.setSortingEnabled(False)
-        self.listWidget.setSortingEnabled(__sortingEnabled)
+        self.listWidget.setSortingEnabled(__sortingEnabled) #Enable sorting for the clues so that the first clue starting with 1 is always on top.
         self.label_54.setText(_translate("MainWindow", "ACROSS"))
         self.label_55.setText(_translate("MainWindow", "DOWN"))
 
@@ -191,6 +187,15 @@ class Ui_MainWindow(object):
         self.label_56.setText(_translate("MainWindow", "Group LUMOS, Today\'s Date: {} {}".format(date.today().strftime("%d/%m/%Y"), datetime.now().strftime("%H:%M:%S"))))
 
     def generateInitialGrid(self, MainWindow, blackGrids, widgetName, input_grid, labels, gridList):
+        """Generates the initial grid, creates frames and labels that we will fill later.
+
+        Args:
+            MainWindow ([type]): MainWindow that we will show the grid in.
+            blackGrids (List): Information from the backend regarding which grids are black in todays puzzle.
+            widgetName (Widget): Widget that the grid is bound to in the frame.
+            input_grid (Dictionary): Grid dictionary that holds every label and every frame that made up the cells.
+            labels (Dictionary): Label dictionary that holds the numbers and the colors of the grid cells.
+        """
         for row in range(5):
             for col in range(5):
                 # Establish grid and label names
@@ -235,6 +240,8 @@ class Ui_MainWindow(object):
                 input_grid.addWidget(gridList[gridName], row, col, 1, 1)
 
     def generateLabelNumbers(self, MainWindow, gridNumbers, translate, labels):
+        """Numbers the grid cells according to today's puzzle. The number information comes from the backend and it is in list form.
+        """
         for row in range(5):
             for col in range(5):
                 if gridNumbers[row][col] != '-':
@@ -242,6 +249,8 @@ class Ui_MainWindow(object):
                     labels[gridName][1].setText(translate(str(MainWindow), gridNumbers[row][col]))
     
     def generateClues(self, MainWindow, cluesAcross, cluesDown, translate):
+        """Places today's clues inside a list in order to display it onto the page. Clues information come from backend.
+        """
         for across in cluesAcross:
             item = QtWidgets.QListWidgetItem()
             self.listWidget_2.addItem(item)
@@ -254,7 +263,8 @@ class Ui_MainWindow(object):
             item.setText(translate(str(MainWindow), clue))
 
     def revealAnswers(self, cellAnswerArray, labels):
-        #print(cellAnswerArray)
+        """ Displays the letters that corresponds to the answers in the cells.
+        """
         for row in range(5):
             for col in range(5):
                 if cellAnswerArray[row][col] != '-':
