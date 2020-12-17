@@ -64,24 +64,9 @@ class ScorePuzzle:
         self.helperScoreGrid(self.downAnswers, downDict)
 
     def helperScoreGrid(self, answers, clues):
-        urls = []
-        indices = []
         for answer in answers:
             word = clues[answer]
-            #indices.append(answer)
-            #urls.append('https://api.datamuse.com/words?ml={}'.format(word))
-
             r = requests.get('https://api.datamuse.com/words?ml={}'.format(word))
-            """
-            requests_session = grequests.Session()
-            rs = (grequests.get(u, session=requests_session) for u in urls) 
-            m = grequests.map(rs)
-
-            index = 0
-            def getJson(r, **kwargs):
-                return r.json()
-            """
-            #for req in m:
             if r != None:
                 results = r.json()
                 count = 0
@@ -92,28 +77,3 @@ class ScorePuzzle:
                         break
                     if count > 50:
                         break
-
-"""
-downClues = {"1": "See 4-Down", "2": "Lincoln Center Performance", "3": "Less restricted", "4":"With 1-Down, tradition for the married couple at a wedding reception",
-"5": "Symbol that shares a key with '?'"}
-acrossClues = {"1": "Removes politely, as a hat", "6": "Rainy month", "7":"___ Tanden, Biden's pick to lead the O.M.B.", "8":"Salad green with a peppery taste",
-"9": "Subject of the famous photo 'The Blue Marble'"}
-grid = [["D", "O", "F", "F", "S"], ["A", "P", "R", "I", "K"],
-["N", "E", "E", "R", "A"], ["C", "R", "E", "S", "S"], ["E", "A", "R", "T", "H"]]
-downLocation = {"1": {"start": {"row": 0, "col": 0}, "end": {"row": 4, "col": 0}},
-"2": {"start": {"row": 0, "col": 1}, "end": {"row": 4, "col": 1}},
-"3": {"start": {"row": 0, "col": 2}, "end": {"row": 4, "col": 2}},
-"4": {"start": {"row": 0, "col": 3}, "end": {"row": 4, "col": 3}},
-"5": {"start": {"row": 0, "col": 4}, "end": {"row": 4, "col": 4}}
-}
-acrossLocation = {"1": {"start": {"row": 0, "col": 0}, "end": {"row": 0, "col": 4}},
-"6": {"start": {"row": 1, "col": 0}, "end": {"row": 1, "col": 4}},
-"7": {"start": {"row": 2, "col": 0}, "end": {"row": 2, "col": 4}},
-"8": {"start": {"row": 3, "col": 0}, "end": {"row": 3, "col": 4}},
-"9": {"start": {"row": 4, "col": 0}, "end": {"row": 4, "col": 4}}
-}
- 
-
-puzzle = ScorePuzzle(grid, acrossLocation, downLocation, acrossClues, downClues)
-print(puzzle.score)
-"""
