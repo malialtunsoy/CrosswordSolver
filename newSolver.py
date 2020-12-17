@@ -25,34 +25,20 @@ class newSolver:
 
         self.lengthOfDownClues = {}
         self.lengthOfAcrossClues = {}
-        
         self.locationOfDownClues = {}
         self.locationOfAcrossClues = {}
-
         self.filteredDomains = {"down": {}, "across": {}} #FILTERED
-
         self.neglectedWords = {"row": [], "col": []} 
         self.neglectedWordsArray = []
-        
         self.count = 0
-
         self.bestSolution = {"across": [[],[],[],[],[]], "down": [[],[],[],[],[]], "find":0}
-
-        self.busSolution = []
+        self.finalSolutions = []
         self.busGrids = []
-        self.bestBusSolution = []
-
+        self.finalSolution = []
         self.solvedPuzzle = []
-    
-        
-
-    
         self.domains = {"across": [[],[],[],[],[]], "down": [[],[],[],[],[]]}
-
         self.cells = [[{"across": {}, "down":{}},{"across": {}, "down":{}},{"across": {}, "down":{}},{"across": {}, "down":{}},{"across": {}, "down":{}}] for r in range(5)]
 
-
-        
         self.setup()
         self.printDomainss()
         #with open('filteredDomains.json', 'w') as fp:
@@ -62,22 +48,16 @@ class newSolver:
         #self.tempCells = copy.deepcopy(self.cells)
         self.solver()
         self.printBestDomains()
-        self.busra()
-        for i in self.bestBusSolution:
-            print(i)
+        self.findFinalPuzzle()
         self.getAnswerGrid()
         print(self.bestSolution["find"])
 
-    
-        
-    
     def setup(self):
         self.wordLengthCalculator()    
         self.filterDomains()
         self.deleteDups()
         self.setDomains()
         self.setCells()
-
 
     def setDomains(self):
         for i in range(0,5):
@@ -664,32 +644,30 @@ class newSolver:
                 tempSolution["across"][row] =  copy.deepcopy(self.domains["across"][row])
             for col in range(0,5):
                 tempSolution["down"][col] =  copy.deepcopy(self.domains["down"][col])
-            self.busSolution.append(tempSolution)
+            self.finalSolutions.append(tempSolution)
            
 
 
-    def busra(self):
+    def findFinalPuzzle(self):
         maxPoint = 0
-        #print("numOfBusSol: " + str(len(self.busSolution)))
-        for solution in self.busSolution:
+        for solution in self.finalSolutions:
             grid  = self.gridMaker(solution)
-            print(grid)
+            print("Calculating score for a possible grid...")
             score = ScorePuzzle(grid, self.locationOfAcrossClues, self.locationOfDownClues, self.acrossClues, self.downClues).score
-            
+            print("Score: ", score)
             if score > maxPoint:
                 maxPoint = score
-                self.bestBusSolution = grid
+                self.finalSolution = grid
         
-        for i in self.bestBusSolution:
-            print(i)
+        print("Best grid:")
+        print(self.finalSolution)
             
     def gridMaker(self, solution):
-        
         answerGrid = [["","","","",""],["","","","",""],["","","","",""],["","","","",""],["","","","",""]]
         for row in range(0,5):
             for col in range(0,5):
                 if answerGrid[row][col] == "":
-                    domains = self.busHelper(row,col,solution)
+                    domains = self.gridMakerHelper(row,col,solution)
                     if domains == {}:
                         answerGrid[row][col] = "-"
                     else:
@@ -702,7 +680,7 @@ class newSolver:
             
         return answerGrid
 
-    def busHelper(self, row,col, curDomain):
+    def gridMakerHelper(self, row,col, curDomain):
         domains = {}
         #down
         for location in self.locationOfDownClues:
@@ -712,7 +690,7 @@ class newSolver:
             rowEnd = self.locationOfDownClues[location]["end"]["row"]
             if (row <= int(rowEnd)) and (row >= int(rowStart)) and (col == int(tempCol)):
                 wordIndex = row-rowStart
-                domains["down"] = {"index": wordIndex, "domain": self.getCurrentDomainWordBus("down",tempCol, curDomain), "loc": self.locationOfDownClues[location]}
+                domains["down"] = {"index": wordIndex, "domain": self.getCurrentDomainWords("down",tempCol, curDomain), "loc": self.locationOfDownClues[location]}
         #across
         for location in self.locationOfAcrossClues:
             wordIndex = -1
@@ -721,10 +699,10 @@ class newSolver:
             colEnd = self.locationOfAcrossClues[location]["end"]["col"]
             if (col <= int(colEnd)) and (col >= int(colStart)) and (row == int(tempRow)):
                 wordIndex = col-colStart
-                domains["across"] = {"index": wordIndex, "domain":  self.getCurrentDomainWordBus("across",tempRow, curDomain), "loc": self.locationOfAcrossClues[location]}
+                domains["across"] = {"index": wordIndex, "domain":  self.getCurrentDomainWords("across",tempRow, curDomain), "loc": self.locationOfAcrossClues[location]}
         return domains
 
-    def getCurrentDomainWordBus(self, acrossDown, index, domain):
+    def getCurrentDomainWords(self, acrossDown, index, domain):
         words = []
         for word in domain[acrossDown][index]:
             if word.active:

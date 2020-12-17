@@ -25,7 +25,6 @@ class Scraping:
         domain = set()
         wiki_set = set()
         synonym_set = set()
-        merriam_set = set()
         toSearch = clue
         """
         print("Google search for:", toSearch)
@@ -47,13 +46,14 @@ class Scraping:
         except:
             print("An exception occurred")
         
+        """
         print("Merriam Webster search for:", toSearch)
         try:
             merriam_set = merriam_set | self.getMerriam(toSearch)
         except:
-            meriamWebster = "mw"
-            
-        domain = domain.union(wiki_set, synonym_set, merriam_set)
+            print("An exception occurred")
+        """    
+        domain = domain.union(wiki_set, synonym_set)
         return ' '.join(str(e) for e in domain) #''.join(str(e) for e in words)
 
     def getGoogle(self, toSearch):
