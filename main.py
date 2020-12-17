@@ -16,48 +16,48 @@ class LUMOSCrosswordSolver:
         self.clues =  {"across": {}, "down":{}}
         self.domains =  {"across": {}, "down":{}}
 
-    def run(self, ):
+    def run(self, demo):
+        if demo:
         #GET CROSSWORD PUZZLE
-        """
-        nyTimesConnector = Connector("C:\Program Files (x86)/chromedriver.exe")
-        nyTimesConnector.connectToPuzzle()
-        self.cellNumberArray = nyTimesConnector.cellNumberArray
-        self.cellBlockArray = nyTimesConnector.cellBlockArray
-        self.cluesAcross = nyTimesConnector.cluesAcross
-        self.cluesDown = nyTimesConnector.cluesDown
-        self.cellAnswerArray = nyTimesConnector.cellAnswerArray
-        """
-
-        with open('data.json', 'r') as fp:
-            data = json.load(fp)
-        with open('cellBlockArray.json', 'r') as fp:
-            self.cellBlockArray = json.load(fp)
-        with open('cellNumberArray.json', 'r') as fp:
-            self.cellNumberArray = json.load(fp)
-        with open('clueAcross.json', 'r') as fp:
-            self.cluesAcross = json.load(fp)
-        with open('cluesDown.json', 'r') as fp:
-            self.cluesDown = json.load(fp)
-
-     
-
-        print(self.cellBlockArray)
-        print(self.cellNumberArray)
-        print(self.cluesAcross)
-        print(self.cluesDown)
-        input("aa")
-        self.setClues()
         
-        #WEB SCRAPING AND SETTING DOMAINS
-        print("===================\nWEB SCRAPING\n===================")
-        #webScrapper = Scraping(self.clues, self.cellAnswerArray, self.cellNumberArray)
-        #webScrapper.setDomains()
-        #SOLVE THE PUZZLE
-        print("===================\nSOLVING THE PUZZLE\n===================")
+            nyTimesConnector = Connector("C:\Program Files (x86)/chromedriver.exe")
+            nyTimesConnector.connectToPuzzle()
+            self.cellNumberArray = nyTimesConnector.cellNumberArray
+            self.cellBlockArray = nyTimesConnector.cellBlockArray
+            self.cluesAcross = nyTimesConnector.cluesAcross
+            self.cluesDown = nyTimesConnector.cluesDown
+            self.cellAnswerArray = nyTimesConnector.cellAnswerArray
+            self.setClues()
+            print("===================\nWEB SCRAPING\n===================")
+            webScrapper = Scraping(self.clues, self.cellAnswerArray, self.cellNumberArray)
+            webScrapper.setDomains()
+            print("===================\nSOLVING THE PUZZLE\n===================")
+            puzzleSolver = newSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, webScrapper.domains)
+        else:
+            with open('data.json', 'r') as fp:
+                data = json.load(fp)
+            with open('cellBlockArray.json', 'r') as fp:
+                self.cellBlockArray = json.load(fp)
+            with open('cellNumberArray.json', 'r') as fp:
+                self.cellNumberArray = json.load(fp)
+            with open('clueAcross.json', 'r') as fp:
+                self.cluesAcross = json.load(fp)
+            with open('cluesDown.json', 'r') as fp:
+                self.cluesDown = json.load(fp)
+            print("===================\nWEB SCRAPING\n===================")
+            self.setClues()
+       
+            print("===================\nSOLVING THE PUZZLE\n===================")
+            puzzleSolver = newSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, data)#webScrapper.domains)
+    
+       
         
         
         
         
+        
+        
+        #SAVE
         """
         with open('cellBlockArray.json', 'w') as fp:
             json.dump(self.cellBlockArray, fp,  indent=4)
@@ -72,8 +72,12 @@ class LUMOSCrosswordSolver:
         """
         #puzzleSolver = CrosswordSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, data)#webScrapper.domains)
         #puzzleSolver = newSolver(cellBlockArray, cellNumberArray,cluesDown, cluesAcross, webScrapper.domains)
-        puzzleSolver = newSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, data)#webScrapper.domains)
         
+        
+        
+        print("===================\nSOLUTION\n===================")
+        for i in puzzleSolver.solvedPuzzle:
+            print(i)
         #DRAW GUI
 
     def setClues(self):
@@ -83,5 +87,7 @@ class LUMOSCrosswordSolver:
             self.clues["down"][down[0]] = down[1]
 
 lumos = LUMOSCrosswordSolver()
-lumos.run()
-#print(lumos.clues)
+lumos.run(True)
+
+
+

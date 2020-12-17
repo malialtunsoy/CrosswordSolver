@@ -51,7 +51,7 @@ class Scraping:
         try:
             merriam_set = merriam_set | self.getMerriam(toSearch)
         except:
-            print("An exception occurred")
+            meriamWebster = "mw"
             
         domain = domain.union(wiki_set, synonym_set, merriam_set)
         return ' '.join(str(e) for e in domain) #''.join(str(e) for e in words)

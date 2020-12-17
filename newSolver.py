@@ -556,11 +556,13 @@ class newSolver:
                 for col in range(0,5):
                     if answerGrid[row][col] == "":
                         answerGrid[row][col] = "*"
+            
             for row in answerGrid:
                 print(row)
             self.solvedPuzzle = answerGrid
         else:
             print(" CORT ")
+            
 
     def isPuzzleSolved(self):
         answerGrid = [["","","","",""],["","","","",""],["","","","",""],["","","","",""],["","","","",""]]
@@ -656,7 +658,6 @@ class newSolver:
 
         #Büşranın fonksiyonu
         if count > 5:
-            print("büş added")
             tempSolution = {"across": [[],[],[],[],[]], "down": [[],[],[],[],[]]}
             for row in range(0,5):
                 tempSolution["across"][row] =  copy.deepcopy(self.domains["across"][row])
