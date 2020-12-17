@@ -6,7 +6,7 @@ from ScorePuzzle import ScorePuzzle
 
 
 class Word:
-    """This Cla
+    """This Class hold a single word in the domain, we used an object because we had to access its active features in a constant time.
     """
     def __init__(self, word, type, rowColIndex, clueIndex, active):
         self.word = word
@@ -76,7 +76,7 @@ class NewSolver:
         self.setCells()
 
     def setDomains(self):
-        """This function sets the location and length of the domains
+        """This function sets the location and length of the domains of the clues.
         """
         for i in range(0, 5):
             for across in self.filteredDomains["across"]:
@@ -90,7 +90,7 @@ class NewSolver:
                         self.domains["down"][i].append(word)
 
     def reset(self):
-        """This function resets the domain from constraint reduction
+        """This function resets the domain from constraint reduction, so the domain becomes the initial domain.
         """
         for index in range(0, 5):
             for word in self.domains["across"][index]:
@@ -164,7 +164,7 @@ class NewSolver:
                 return False
 
     def getTrueFalse(self, row, col, acrossDown, letter):
-        """This function returns the letter in the desired cell is present or not
+        """This function returns if the letter given as a parameter is present or not in the desired cell.
         """
         for word in self.cells[row][col][acrossDown][letter]:
             if word.active:
@@ -172,7 +172,7 @@ class NewSolver:
         return False
 
     def getCurrentWords(self, row, col, acrossDown, letter):
-        """This function returns the presenet words in the desired cell for specific letter
+        """This function returns the presenet words in the desired cell for specific letter.
         """
         words = []
         for word in self.cells[row][col][acrossDown][letter]:
@@ -181,7 +181,7 @@ class NewSolver:
         return words
 
     def printDomainss(self):
-        """This function prints the current domains
+        """This function prints the current domains.
         """
         print("Across")
         for col in range(0, 5):
@@ -200,7 +200,7 @@ class NewSolver:
             print("\n")
 
     def printDomainLen(self):
-        """This function prints the size of the domains
+        """This function prints the size of the domains.
         """
         print("Across")
         for col in range(0, 5):
@@ -486,7 +486,7 @@ class NewSolver:
         return domains
 
     def getCurrentDomainWord(self, acrossDown, index):
-        """This function returns the word in the best solution for specific clue
+        """This function returns the words after the domain is filtered and becomes the final domain.
         """
         words = []
         for word in self.bestSolution[acrossDown][index]:
@@ -495,8 +495,8 @@ class NewSolver:
         return words
 
     def getAnswerGrid(self):
-        """This function prints the best solutions grid. With considering across and down solutions separetly,
-        and then prints the matched cells other wise leaves empty
+        """This function prints the best solutions grid. With considering across and down solutions seperately,
+        and then prints the matched cells otherwise leaves empty
         """
         if self.bestSolution["find"] != 0:
             answerGrid = [["", "", "", "", ""], ["", "", "", "", ""], [
@@ -530,8 +530,8 @@ class NewSolver:
             print(" CORT ")
 
     def isPuzzleSolved(self):
-        """This function is check for if the current domains are enough
-        for filling the all cells of the puzzle with one possible option
+        """This function checks if the current domains are enough
+        for filling all the cells of the puzzle with one possible option
         """
         answerGrid = [["", "", "", "", ""], ["", "", "", "", ""], [
             "", "", "", "", ""], ["", "", "", "", ""], ["", "", "", "", ""]]
@@ -558,7 +558,7 @@ class NewSolver:
         return puzzleSolved
 
     def printBestDomains(self):
-        """This function prints the domains of best solution founded
+        """This function prints the domains of best solution found
         """
         print("Across")
         for col in range(0, 5):
@@ -577,7 +577,7 @@ class NewSolver:
             print("\n")
 
     def changeNeglected(self):
-        """This program creates all combinations of neglegcted clues and
+        """This program creates all combinations of neglegted clues and
         iterates them when called
         """
         if self.count == 0:
@@ -643,9 +643,10 @@ class NewSolver:
 
     def findFinalPuzzle(self):
         """This function tests the solutions which are closely solved. Generally there are 5-10 solutions.
-        And crosscheck the founed answers with the clue it self. 
-        It gives a rating in order to matching of the founded answer and its clue.
-        The most rated solution is choosen as the final solution
+        And crosscheck the answers placed on the grid with their clues in order to decide if they are relevant.
+        If we have placed an irrelevant word just because it fits in the constraints, it will eliminate it. 
+        It gives a ratinf to the solution by checking every word on it and giving it a relevancy score.
+        The solution with most relevant words on it is the best solution.
         """
         if len(self.finalSolution) == 1:
             self.finalSolution = self.gridMaker(self.finalSolution[0])
@@ -665,7 +666,7 @@ class NewSolver:
                     self.finalSolution = grid
 
     def gridMaker(self, solution):
-        """This function draws the grid of the solution of final trials
+        """This function draws the grid of the solutions that we have found to be complete.
         """
         answerGrid = [["", "", "", "", ""], ["", "", "", "", ""], [
             "", "", "", "", ""], ["", "", "", "", ""], ["", "", "", "", ""]]
