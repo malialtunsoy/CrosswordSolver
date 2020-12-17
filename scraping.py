@@ -40,7 +40,7 @@ class Scraping:
         except:
             print("An exception occurred")
         
-        print("Synonym search for:", toSearch)
+        print("Synonym search from Datamuse and Merriam-Webster for:", toSearch)
         try:
             synonym_set = synonym_set | self.getSynonyms(toSearch)
         except:

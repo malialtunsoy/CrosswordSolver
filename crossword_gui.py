@@ -9,13 +9,12 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets, Qt
-from demo1 import Connector
 from datetime import date
 from datetime import datetime
 
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow, cellNumberArray, cellBlockArray, cluesAcross, cluesDown, cellAnswerArray):
+    def setupUi(self, MainWindow, cellNumberArray, cellBlockArray, cluesAcross, cluesDown, cellAnswerArray, solved):
         MainWindow.setObjectName("LUMOS Puzzle Solver")
         MainWindow.resize(1127, 743)
         MainWindow.adjustSize()
@@ -24,6 +23,7 @@ class Ui_MainWindow(object):
         self.cluesAcross = cluesAcross
         self.cluesDown = cluesDown
         self.cellAnswerArray = cellAnswerArray
+        self.solved = solved
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
@@ -79,9 +79,11 @@ class Ui_MainWindow(object):
         self.gridLayout_2.setContentsMargins(3, 3, 3, 3)
         self.gridLayout_2.setSpacing(0)
         self.gridLayout_2.setObjectName("gridLayout_2")
+        self.labels = {}
+        self.gridList_1 = {}
 
-        self.generateInitialGrid(MainWindow, self.cellBlockArray, self.widget)
-        self.revealAnswers(self.cellAnswerArray)
+        self.generateInitialGrid(MainWindow, self.cellBlockArray, self.widget, self.gridLayout_2, self.labels, self.gridList_1)
+        self.revealAnswers(self.cellAnswerArray, self.labels)
 
 
 
@@ -103,9 +105,11 @@ class Ui_MainWindow(object):
         self.gridLayout_right.setContentsMargins(3, 3, 3, 3)
         self.gridLayout_right.setSpacing(0)
         self.gridLayout_right.setObjectName("gridLayout_right")
+        self.labels_2 = {}
+        self.gridList_2 = {}
 
-        """self.generateInitialGrid(MainWindow, self.cellBlockArray, self.widget_right)
-        self.revealAnswers(self.cellAnswerArray)"""
+        self.generateInitialGrid(MainWindow, self.cellBlockArray, self.widget_right, self.gridLayout_right, self.labels_2, self.gridList_2)
+        self.revealAnswers(self.solved, self.labels_2)
 
 
         self.horizontalLayout.addWidget(self.widget)
@@ -175,7 +179,8 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Lumos Puzzle Solver"))
         self.label.setText(_translate("MainWindow", "The Mini Crossword"))
-        self.generateLabelNumbers(MainWindow, self.cellNumberArray, _translate)
+        self.generateLabelNumbers(MainWindow, self.cellNumberArray, _translate, self.labels)
+        self.generateLabelNumbers(MainWindow, self.cellNumberArray, _translate, self.labels_2)
         __sortingEnabled = self.listWidget.isSortingEnabled()
         self.listWidget.setSortingEnabled(False)
         self.listWidget.setSortingEnabled(__sortingEnabled)
@@ -185,58 +190,56 @@ class Ui_MainWindow(object):
         self.generateClues(MainWindow, self.cluesAcross, self.cluesDown, _translate)
         self.label_56.setText(_translate("MainWindow", "Group LUMOS, Today\'s Date: {} {}".format(date.today().strftime("%d/%m/%Y"), datetime.now().strftime("%H:%M:%S"))))
 
-    def generateInitialGrid(self, MainWindow, blackGrids, widgetName):
-        self.grid = {}
-        self.labels = {}
+    def generateInitialGrid(self, MainWindow, blackGrids, widgetName, input_grid, labels, gridList):
         for row in range(5):
             for col in range(5):
                 # Establish grid and label names
                 gridName = "frame_{}_{}".format(str(row), str(col))
                 # Create a grid element
-                self.grid[gridName] = QtWidgets.QFrame(widgetName)
+                gridList[gridName] = QtWidgets.QFrame(widgetName)
                 # Set the tile color
                 if blackGrids[row][col] == '1':
-                    self.grid[gridName].setStyleSheet("background-color: rgb(0, 0, 0);")
+                    gridList[gridName].setStyleSheet("background-color: rgb(0, 0, 0);")
                 else:
-                    self.grid[gridName].setStyleSheet("background-color: rgb(255,255,255);")
+                    gridList[gridName].setStyleSheet("background-color: rgb(255,255,255);")
 
                 # Set the frame shape
-                self.grid[gridName].setFrameShape(QtWidgets.QFrame.StyledPanel)
+                gridList[gridName].setFrameShape(QtWidgets.QFrame.StyledPanel)
                 # Set the frame shadow
-                self.grid[gridName].setFrameShadow(QtWidgets.QFrame.Raised)
+                gridList[gridName].setFrameShadow(QtWidgets.QFrame.Raised)
                 # Set object name
-                self.grid[gridName].setObjectName(gridName)
+                gridList[gridName].setObjectName(gridName)
 
                 # Create the labels for the tile, the first label in the tuple is the 
-                self.labels[gridName] = (QtWidgets.QLabel(self.grid[gridName]), QtWidgets.QLabel(self.grid[gridName])) 
+                labels[gridName] = (QtWidgets.QLabel(gridList[gridName]), QtWidgets.QLabel(gridList[gridName])) 
                 
                 # Set the styles of the labels
-                self.labels[gridName][0].setGeometry(QtCore.QRect(20, 40, 60, 55))
-                self.labels[gridName][1].setGeometry(QtCore.QRect(5, 10, 31, 31))
+                labels[gridName][0].setGeometry(QtCore.QRect(20, 40, 60, 55))
+                labels[gridName][1].setGeometry(QtCore.QRect(5, 10, 31, 31))
                 font = QtGui.QFont()
                 
                 font.setFamily("Helvetica")
                 font.setPointSize(36)
                 font.setWeight(40)
-                self.labels[gridName][0].setFont(font)
+                labels[gridName][0].setFont(font)
 
                 font2 = QtGui.QFont()
                 font2.setFamily("Arial")
                 font2.setPointSize(20)
                 font2.setWeight(30)
-                self.labels[gridName][1].setFont(font2)
+                labels[gridName][1].setFont(font2)
 
-                self.labels[gridName][0].setStyleSheet("border-width: 0; color: rgb(40, 96, 216)")
-                self.labels[gridName][1].setStyleSheet("border-width: 0")
-                self.labels[gridName][0].setAlignment(QtCore.Qt.AlignCenter)
-                self.gridLayout_2.addWidget(self.grid[gridName], row, col, 1, 1)
+                labels[gridName][0].setStyleSheet("border-width: 0; color: rgb(40, 96, 216)")
+                labels[gridName][1].setStyleSheet("border-width: 0")
+                labels[gridName][0].setAlignment(QtCore.Qt.AlignCenter)
+                input_grid.addWidget(gridList[gridName], row, col, 1, 1)
 
-    def generateLabelNumbers(self, MainWindow, gridNumbers, translate):
+    def generateLabelNumbers(self, MainWindow, gridNumbers, translate, labels):
         for row in range(5):
             for col in range(5):
                 if gridNumbers[row][col] != '-':
                     gridName = "frame_{}_{}".format(str(row), str(col))
-                    self.labels[gridName][1].setText(translate(str(MainWindow), gridNumbers[row][col]))
+                    labels[gridName][1].setText(translate(str(MainWindow), gridNumbers[row][col]))
     
     def generateClues(self, MainWindow, cluesAcross, cluesDown, translate):
         for across in cluesAcross:
@@ -250,22 +253,10 @@ class Ui_MainWindow(object):
             clue = "{} {} \n".format(str(down[0]), down[1])
             item.setText(translate(str(MainWindow), clue))
 
-    def revealAnswers(self, cellAnswerArray):
+    def revealAnswers(self, cellAnswerArray, labels):
+        #print(cellAnswerArray)
         for row in range(5):
             for col in range(5):
                 if cellAnswerArray[row][col] != '-':
                     gridName = "frame_{}_{}".format(str(row), str(col))
-                    self.labels[gridName][0].setText(cellAnswerArray[row][col])
-
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    c = Connector("/usr/bin/chromedriver")
-    c.connectToPuzzle()
-    ui.setupUi(MainWindow, c.cellNumberArray, c.cellBlockArray, c.cluesAcross, c.cluesDown, c.cellAnswerArray)
-    MainWindow.show()
-    sys.exit(app.exec_())
+                    labels[gridName][0].setText(cellAnswerArray[row][col])

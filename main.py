@@ -3,7 +3,10 @@ from scraping import Scraping
 from crosswordSolver import CrosswordSolver
 from nyTimesPuzzle import Connector
 from newSolver import newSolver
+from PyQt5 import QtCore, QtGui, QtWidgets, Qt
+from crossword_gui import Ui_MainWindow
 import json
+
 
 class LUMOSCrosswordSolver:
     def __init__(self):
@@ -13,14 +16,15 @@ class LUMOSCrosswordSolver:
         self.cluesDown = []
         self.cellAnswerArray = []
 
-        self.clues =  {"across": {}, "down":{}}
-        self.domains =  {"across": {}, "down":{}}
+        self.clues = {"across": {}, "down": {}}
+        self.domains = {"across": {}, "down": {}}
 
     def run(self, demo):
         if demo:
-        #GET CROSSWORD PUZZLE
-        
-            nyTimesConnector = Connector("C:\Program Files (x86)/chromedriver.exe")
+            # GET CROSSWORD PUZZLE
+
+            nyTimesConnector = Connector(
+                "C:\Program Files (x86)/chromedriver.exe")
             nyTimesConnector.connectToPuzzle()
             self.cellNumberArray = nyTimesConnector.cellNumberArray
             self.cellBlockArray = nyTimesConnector.cellBlockArray
@@ -29,11 +33,14 @@ class LUMOSCrosswordSolver:
             self.cellAnswerArray = nyTimesConnector.cellAnswerArray
             self.setClues()
             print("===================\nWEB SCRAPING\n===================")
-            webScrapper = Scraping(self.clues, self.cellAnswerArray, self.cellNumberArray)
+            webScrapper = Scraping(
+                self.clues, self.cellAnswerArray, self.cellNumberArray)
             webScrapper.setDomains()
             print("===================\nSOLVING THE PUZZLE\n===================")
-            puzzleSolver = newSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, webScrapper.domains)
+            puzzleSolver = newSolver(self.cellBlockArray, self.cellNumberArray,
+                                     self.cluesDown, self.cluesAcross, webScrapper.domains)
         else:
+
             with open('data.json', 'r') as fp:
                 data = json.load(fp)
             with open('cellBlockArray.json', 'r') as fp:
@@ -46,18 +53,14 @@ class LUMOSCrosswordSolver:
                 self.cluesDown = json.load(fp)
             print("===================\nWEB SCRAPING\n===================")
             self.setClues()
-       
+            webScrapper = Scraping(
+                self.clues, self.cellAnswerArray, self.cellNumberArray)
+            webScrapper.setDomains()
             print("===================\nSOLVING THE PUZZLE\n===================")
-            puzzleSolver = newSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, data)#webScrapper.domains)
-    
-       
-        
-        
-        
-        
-        
-        
-        #SAVE
+            puzzleSolver = newSolver(self.cellBlockArray, self.cellNumberArray,
+                                     self.cluesDown, self.cluesAcross, webScrapper.domains)
+
+        # SAVE
         """
         with open('cellBlockArray.json', 'w') as fp:
             json.dump(self.cellBlockArray, fp,  indent=4)
@@ -70,15 +73,21 @@ class LUMOSCrosswordSolver:
         with open('data.json', 'w') as fp:
             json.dump(webScrapper.domains, fp,  indent=4)
         """
-        #puzzleSolver = CrosswordSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, data)#webScrapper.domains)
+        # puzzleSolver = CrosswordSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, data)#webScrapper.domains)
         #puzzleSolver = newSolver(cellBlockArray, cellNumberArray,cluesDown, cluesAcross, webScrapper.domains)
-        
-        
-        
+
         print("===================\nSOLUTION\n===================")
         for i in puzzleSolver.solvedPuzzle:
             print(i)
-        #DRAW GUI
+        # DRAW GUI
+        import sys
+        app = QtWidgets.QApplication(sys.argv)
+        MainWindow = QtWidgets.QMainWindow()
+        ui = Ui_MainWindow()
+        ui.setupUi(MainWindow, self.cellNumberArray, self.cellBlockArray, self.cluesAcross,
+                   self.cluesDown, self.cellAnswerArray, puzzleSolver.solvedPuzzle)
+        MainWindow.show()
+        sys.exit(app.exec_())
 
     def setClues(self):
         for across in self.cluesAcross:
@@ -86,8 +95,6 @@ class LUMOSCrosswordSolver:
         for down in self.cluesDown:
             self.clues["down"][down[0]] = down[1]
 
+
 lumos = LUMOSCrosswordSolver()
 lumos.run(True)
-
-
-

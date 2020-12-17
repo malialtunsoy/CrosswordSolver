@@ -13,23 +13,25 @@ def combine_tokens(clue, acrossClues, downClues):
 
     nlp = spacy.load("en_core_web_sm")
     doc = nlp(clue)
-
+    """
     if len(doc.ents) != 0:
         tokens = list()
         for entity in doc.ents:
             tokens.append(entity.text)
     else:
-        clue = clue.lower()
-        clue_without_punctuation = clue.translate(
-            str.maketrans('', '', string.punctuation))
-        tokens = nltk.word_tokenize(clue_without_punctuation)
-        tokens = [w for w in tokens if not w in stop_words]
-        number_of_tokens = len(tokens)
-        # print(tokens)
-        for i in range(number_of_tokens):
-            if i != number_of_tokens -1:
-                tokens.append(tokens[i] + " " + tokens[i + 1])
-    print(tokens)
+    """
+    clue = clue.lower()
+    clue = clue.replace("-", " ")
+    clue_without_punctuation = clue.translate(
+        str.maketrans('', '', string.punctuation))
+    tokens = nltk.word_tokenize(clue_without_punctuation)
+    tokens = [w for w in tokens if not w in stop_words]
+    number_of_tokens = len(tokens)
+    # print(tokens)
+    for i in range(number_of_tokens):
+        if i != number_of_tokens -1:
+            tokens.append(tokens[i] + " " + tokens[i + 1])
+    #print(tokens)
     return tokens
 
 
