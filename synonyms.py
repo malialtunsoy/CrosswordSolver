@@ -55,14 +55,14 @@ def searchSynonyms(clue, acrossClues, downClues):
         for result in results:
             words.add(result['word'])
             count += 1
-            if count > 20:
+            if count > 50:
                 break
         results = r_dm2.json()
         count = 0
         for result in results:
             words.add(result['word'])
             count += 1
-            if count > 20:
+            if count > 50:
                 break
     return words
 

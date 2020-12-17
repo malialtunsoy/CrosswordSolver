@@ -2,6 +2,7 @@ import itertools
 import copy
 import string
 import json
+#from ScorePuzzle import ScorePuzzle
 
 class Word:
     def __init__(self,word,type,rowColIndex,clueIndex,active):
@@ -36,6 +37,10 @@ class newSolver:
 
         self.bestSolution = {"across": [[],[],[],[],[]], "down": [[],[],[],[],[]], "find":0}
 
+        self.busSolution = []
+        self.busGrids = []
+        bestBusSolution = []
+
         self.solvedPuzzle = []
     
         
@@ -48,6 +53,7 @@ class newSolver:
 
 
         self.setup()
+        self.printDomainss()
         #with open('filteredDomains.json', 'w') as fp:
        #   json.dump(self.domains, fp,  indent=4)
        
@@ -55,10 +61,12 @@ class newSolver:
         #self.tempCells = copy.deepcopy(self.cells)
         self.solver()
         self.printBestDomains()
-        
+        self.busra()
         
         self.getAnswerGrid()
-        
+
+
+    
         
     
     def setup(self):
@@ -643,3 +651,68 @@ class newSolver:
             for col in range(0,5):
                 self.bestSolution["down"][col] =  copy.deepcopy(self.domains["down"][col])
             self.bestSolution["find"] = count
+
+        #Büşranın fonksiyonu
+        if count > 20:
+            tempSolution = {"across": [[],[],[],[],[]], "down": [[],[],[],[],[]]}
+            for row in range(0,5):
+                tempSolution["across"][row] =  copy.deepcopy(self.domains["across"][row])
+            for col in range(0,5):
+                tempSolution["down"][col] =  copy.deepcopy(self.domains["down"][col])
+            self.busSolution.append(tempSolution)
+           
+
+
+    def busra(self):
+        maxPoint = 0
+        print("numOfBusSol: " + str(len(self.busSolution)))
+        for solution in self.busSolution:
+            grid  = self.gridMaker(solution)
+            print(grid)
+            input("ii")
+            #score = ScorePuzzle(grid, self.locationOfAcrossClues, self.locationOfDownClues, self.domains["across"], self.domains["down"]).score
+            """
+            if score > maxPoint:
+                maxPoint = score
+                self.bestBusSolution = grid
+            """
+    def gridMaker(self, solution):
+        
+        answerGrid = [["","","","",""],["","","","",""],["","","","",""],["","","","",""],["","","","",""]]
+        for row in range(0,5):
+            for col in range(0,5):
+                if answerGrid[row][col] == "":
+                    domains = self.busHelper(row,col,solution)
+                    if domains == {}:
+                        answerGrid[row][col] = "-"
+                    else:
+                        if len(self.getCurrentDomainWord("across", row)) == 1:
+                            for colIndex in range(domains["across"]["loc"]["start"]["col"], domains["across"]["loc"]["start"]["col"] + len(domains["across"]["domain"][0].word)):
+                                answerGrid[row][colIndex] = domains["across"]["domain"][0].word[colIndex - domains["across"]["loc"]["start"]["col"]]  
+                        if len(self.getCurrentDomainWord("down", col)) == 1:
+                            for rowIndex in range(domains["down"]["loc"]["start"]["row"], domains["down"]["loc"]["start"]["row"] + len(domains["down"]["domain"][0].word)):
+                                answerGrid[rowIndex][col] = domains["down"]["domain"][0].word[rowIndex - domains["down"]["loc"]["start"]["row"]]
+            
+        return answerGrid
+
+    def busHelper(self, row,col, curDomain):
+        domains = {}
+        #down
+        for location in self.locationOfDownClues:
+            wordIndex = -1
+            tempCol = self.locationOfDownClues[location]["start"]["col"]
+            rowStart = self.locationOfDownClues[location]["start"]["row"]
+            rowEnd = self.locationOfDownClues[location]["end"]["row"]
+            if (row <= int(rowEnd)) and (row >= int(rowStart)) and (col == int(tempCol)):
+                wordIndex = row-rowStart
+                domains["down"] = {"index": wordIndex, "domain": curDomain["down"][location], "loc": self.locationOfDownClues[location]}
+        #across
+        for location in self.locationOfAcrossClues:
+            wordIndex = -1
+            tempRow = self.locationOfAcrossClues[location]["start"]["row"]
+            colStart = self.locationOfAcrossClues[location]["start"]["col"]
+            colEnd = self.locationOfAcrossClues[location]["end"]["col"]
+            if (col <= int(colEnd)) and (col >= int(colStart)) and (row == int(tempRow)):
+                wordIndex = col-colStart
+                domains["across"] = {"index": wordIndex, "domain": curDomain["across"][location], "loc": self.locationOfAcrossClues[location]}
+        return domains
