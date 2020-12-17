@@ -41,8 +41,8 @@ class LUMOSCrosswordSolver:
                                      self.cluesDown, self.cluesAcross, webScrapper.domains)
         else:
 
-            with open('data.json', 'r') as fp:
-                data = json.load(fp)
+            #with open('data.json', 'r') as fp:
+            #    data = json.load(fp)
             with open('cellBlockArray.json', 'r') as fp:
                 self.cellBlockArray = json.load(fp)
             with open('cellNumberArray.json', 'r') as fp:
@@ -51,14 +51,14 @@ class LUMOSCrosswordSolver:
                 self.cluesAcross = json.load(fp)
             with open('cluesDown.json', 'r') as fp:
                 self.cluesDown = json.load(fp)
+            with open('answers.json', 'r') as fp:
+                self.cellAnswerArray = json.load(fp)
             print("===================\nWEB SCRAPING\n===================")
             self.setClues()
-            webScrapper = Scraping(
-                self.clues, self.cellAnswerArray, self.cellNumberArray)
+            webScrapper = Scraping(self.clues, self.cellAnswerArray, self.cellNumberArray)
             webScrapper.setDomains()
             print("===================\nSOLVING THE PUZZLE\n===================")
-            puzzleSolver = newSolver(self.cellBlockArray, self.cellNumberArray,
-                                     self.cluesDown, self.cluesAcross, webScrapper.domains)
+            puzzleSolver = newSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, webScrapper.domains)
 
         # SAVE
         """

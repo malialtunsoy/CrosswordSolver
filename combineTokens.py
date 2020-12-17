@@ -21,7 +21,7 @@ def combine_tokens(clue, acrossClues, downClues):
     else:
     """
     clue = clue.lower()
-    clue = clue.replace("-", " ")
+    #clue = clue.replace("-", " ")
     clue_without_punctuation = clue.translate(
         str.maketrans('', '', string.punctuation))
     tokens = nltk.word_tokenize(clue_without_punctuation)
