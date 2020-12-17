@@ -52,7 +52,7 @@ class newSolver:
         self.cells = [[{"across": {}, "down":{}},{"across": {}, "down":{}},{"across": {}, "down":{}},{"across": {}, "down":{}},{"across": {}, "down":{}}] for r in range(5)]
 
 
-
+        
         self.setup()
         self.printDomainss()
         #with open('filteredDomains.json', 'w') as fp:
@@ -127,7 +127,7 @@ class newSolver:
             self.printDomainss()
             """
             self.reset()
-            print(self.neglectedWords)
+            #print(self.neglectedWords)
             if self.changeNeglected():
                 changeMade = True
                 #Constraints
@@ -625,6 +625,7 @@ class newSolver:
             self.count = self.count + 1
             return True
         else:
+            print("Neglected: ", end  ="")
             print(self.neglectedWords)
             if self.count == 1024:
                 return False
@@ -669,7 +670,7 @@ class newSolver:
 
     def busra(self):
         maxPoint = 0
-        print("numOfBusSol: " + str(len(self.busSolution)))
+        #print("numOfBusSol: " + str(len(self.busSolution)))
         for solution in self.busSolution:
             grid  = self.gridMaker(solution)
             print(grid)
