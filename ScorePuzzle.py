@@ -1,4 +1,4 @@
-import grequests
+import requests
 
 class ScorePuzzle:
     def __init__(self, grid, acrossLocation, downLocation, acrossClues, downClues):
@@ -67,30 +67,31 @@ class ScorePuzzle:
         urls = []
         indices = []
         for answer in answers:
-           
             word = clues[answer]
+            #indices.append(answer)
+            #urls.append('https://api.datamuse.com/words?ml={}'.format(word))
 
-            indices.append(answer)
-            urls.append('https://api.datamuse.com/words?ml={}'.format(word))
+            r = requests.get('https://api.datamuse.com/words?ml={}'.format(word))
+            """
+            requests_session = grequests.Session()
+            rs = (grequests.get(u, session=requests_session) for u in urls) 
+            m = grequests.map(rs)
 
-        #requests_session = grequests.Session()
-        rs = (grequests.get(u) for u in urls) #requests.get('https://api.datamuse.com/words?ml={}'.format(word))
-        m = grequests.map(rs)
-
-        index = 0
-        for req in m:
-            if req != None:
-                print("AMAN")
-                results = req.json()
+            index = 0
+            def getJson(r, **kwargs):
+                return r.json()
+            """
+            #for req in m:
+            if r != None:
+                results = r.json()
                 count = 0
                 for result in results:
                     count += 1
-                    if result['word'] == answers[indices[index]].lower():
+                    if result['word'] == answers[answer].lower():#answers[indices[index]].lower():
                         self.score += result['score']
                         break
-                    if count > 10:
+                    if count > 50:
                         break
-                index += 1
 
 """
 downClues = {"1": "See 4-Down", "2": "Lincoln Center Performance", "3": "Less restricted", "4":"With 1-Down, tradition for the married couple at a wedding reception",
