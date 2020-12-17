@@ -53,14 +53,23 @@ class ScorePuzzle:
         to the according clue. If an answer is related to the clue,
         it gets score given in the datamuse data.
         """
-        self.helperScoreGrid(self.acrossAnswers, self.acrossClues)
-        self.helperScoreGrid(self.downAnswers, self.downClues)
-    
+        downDict = {}
+        acrossDict = {}
+        for i in self.downClues:
+            downDict[i[0]] = i[1]
+        for i in self.acrossClues:
+            acrossDict[i[0]] = i[1]
+
+        self.helperScoreGrid(self.acrossAnswers,  acrossDict)
+        self.helperScoreGrid(self.downAnswers, downDict)
+
     def helperScoreGrid(self, answers, clues):
         urls = []
         indices = []
         for answer in answers:
+           
             word = clues[answer]
+
             indices.append(answer)
             urls.append('https://api.datamuse.com/words?ml={}'.format(word))
 
@@ -70,16 +79,18 @@ class ScorePuzzle:
 
         index = 0
         for req in m:
-            results = req.json()
-            count = 0
-            for result in results:
-                count += 1
-                if result['word'] == answers[indices[index]].lower():
-                    self.score += result['score']
-                    break
-                if count > 10:
-                    break
-            index += 1
+            if req != None:
+                print("AMAN")
+                results = req.json()
+                count = 0
+                for result in results:
+                    count += 1
+                    if result['word'] == answers[indices[index]].lower():
+                        self.score += result['score']
+                        break
+                    if count > 10:
+                        break
+                index += 1
 
 """
 downClues = {"1": "See 4-Down", "2": "Lincoln Center Performance", "3": "Less restricted", "4":"With 1-Down, tradition for the married couple at a wedding reception",

@@ -28,8 +28,8 @@ class LUMOSCrosswordSolver:
         self.cellAnswerArray = nyTimesConnector.cellAnswerArray
         """
 
-        #with open('data.json', 'r') as fp:
-        #    data = json.load(fp)
+        with open('data.json', 'r') as fp:
+            data = json.load(fp)
         with open('cellBlockArray.json', 'r') as fp:
             self.cellBlockArray = json.load(fp)
         with open('cellNumberArray.json', 'r') as fp:
@@ -50,8 +50,8 @@ class LUMOSCrosswordSolver:
         
         #WEB SCRAPING AND SETTING DOMAINS
         print("===================\nWEB SCRAPING\n===================")
-        webScrapper = Scraping(self.clues, self.cellAnswerArray, self.cellNumberArray)
-        webScrapper.setDomains()
+        #webScrapper = Scraping(self.clues, self.cellAnswerArray, self.cellNumberArray)
+        #webScrapper.setDomains()
         #SOLVE THE PUZZLE
         print("===================\nSOLVING THE PUZZLE\n===================")
         
@@ -72,7 +72,7 @@ class LUMOSCrosswordSolver:
         """
         #puzzleSolver = CrosswordSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, data)#webScrapper.domains)
         #puzzleSolver = newSolver(cellBlockArray, cellNumberArray,cluesDown, cluesAcross, webScrapper.domains)
-        puzzleSolver = newSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, webScrapper.domains)
+        puzzleSolver = newSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, data)#webScrapper.domains)
         
         #DRAW GUI
 

@@ -2,7 +2,7 @@ import itertools
 import copy
 import string
 import json
-#from ScorePuzzle import ScorePuzzle
+from ScorePuzzle import ScorePuzzle
 
 class Word:
     def __init__(self,word,type,rowColIndex,clueIndex,active):
@@ -20,8 +20,9 @@ class newSolver:
         self.acrossClues = acrossClues
         self.initialDomains = copy.deepcopy(domains) #INITIAL
         
-        #with open('data.json', 'w') as fp:
-         #   json.dump(domains, fp,  indent=4)
+        with open('data.json', 'w') as fp:
+            json.dump(domains, fp,  indent=4)
+
         self.lengthOfDownClues = {}
         self.lengthOfAcrossClues = {}
         
@@ -39,7 +40,7 @@ class newSolver:
 
         self.busSolution = []
         self.busGrids = []
-        bestBusSolution = []
+        self.bestBusSolution = []
 
         self.solvedPuzzle = []
     
@@ -62,9 +63,10 @@ class newSolver:
         self.solver()
         self.printBestDomains()
         self.busra()
-        
+        for i in self.bestBusSolution:
+            print(i)
         self.getAnswerGrid()
-
+        print(self.bestSolution["find"])
 
     
         
@@ -653,7 +655,8 @@ class newSolver:
             self.bestSolution["find"] = count
 
         #Büşranın fonksiyonu
-        if count > 20:
+        if count > 5:
+            print("büş added")
             tempSolution = {"across": [[],[],[],[],[]], "down": [[],[],[],[],[]]}
             for row in range(0,5):
                 tempSolution["across"][row] =  copy.deepcopy(self.domains["across"][row])
@@ -669,13 +672,15 @@ class newSolver:
         for solution in self.busSolution:
             grid  = self.gridMaker(solution)
             print(grid)
-            input("ii")
-            #score = ScorePuzzle(grid, self.locationOfAcrossClues, self.locationOfDownClues, self.domains["across"], self.domains["down"]).score
-            """
+            score = ScorePuzzle(grid, self.locationOfAcrossClues, self.locationOfDownClues, self.acrossClues, self.downClues).score
+            
             if score > maxPoint:
                 maxPoint = score
                 self.bestBusSolution = grid
-            """
+        
+        for i in self.bestBusSolution:
+            print(i)
+            
     def gridMaker(self, solution):
         
         answerGrid = [["","","","",""],["","","","",""],["","","","",""],["","","","",""],["","","","",""]]
@@ -705,7 +710,7 @@ class newSolver:
             rowEnd = self.locationOfDownClues[location]["end"]["row"]
             if (row <= int(rowEnd)) and (row >= int(rowStart)) and (col == int(tempCol)):
                 wordIndex = row-rowStart
-                domains["down"] = {"index": wordIndex, "domain": curDomain["down"][location], "loc": self.locationOfDownClues[location]}
+                domains["down"] = {"index": wordIndex, "domain": self.getCurrentDomainWordBus("down",tempCol, curDomain), "loc": self.locationOfDownClues[location]}
         #across
         for location in self.locationOfAcrossClues:
             wordIndex = -1
@@ -714,5 +719,12 @@ class newSolver:
             colEnd = self.locationOfAcrossClues[location]["end"]["col"]
             if (col <= int(colEnd)) and (col >= int(colStart)) and (row == int(tempRow)):
                 wordIndex = col-colStart
-                domains["across"] = {"index": wordIndex, "domain": curDomain["across"][location], "loc": self.locationOfAcrossClues[location]}
+                domains["across"] = {"index": wordIndex, "domain":  self.getCurrentDomainWordBus("across",tempRow, curDomain), "loc": self.locationOfAcrossClues[location]}
         return domains
+
+    def getCurrentDomainWordBus(self, acrossDown, index, domain):
+        words = []
+        for word in domain[acrossDown][index]:
+            if word.active:
+                words.append(word)
+        return words
