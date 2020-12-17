@@ -4,7 +4,6 @@ import string
 import json
 from ScorePuzzle import ScorePuzzle
 
-
 class Word:
     def __init__(self, word, type, rowColIndex, clueIndex, active):
         self.word = word
@@ -14,7 +13,7 @@ class Word:
         self.active = active
 
 
-class newSolver:
+class NewSolver:
     def __init__(self, grid, numbers, downClues, acrossClues, domains):
         self.grid = grid
         self.numbers = numbers

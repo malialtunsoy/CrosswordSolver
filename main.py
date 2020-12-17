@@ -1,8 +1,8 @@
 from requests.api import delete
 from scraping import Scraping
 from crosswordSolver import CrosswordSolver
-from nyTimesPuzzle import Connector
-from newSolver import newSolver
+from Connector import Connector
+from NewSolver import NewSolver
 from PyQt5 import QtCore, QtGui, QtWidgets, Qt
 from crossword_gui import Ui_MainWindow
 import json
