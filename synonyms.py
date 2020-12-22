@@ -13,7 +13,9 @@ def searchSynonyms(clue, acrossClues, downClues):
     It tokenizes the clue first to subwords and search for each word on Merriam Webster
     and Datamuse.
     """
+    print('Search list for "' + clue + '":', end=' ')
     tokens = combine_tokens(clue, acrossClues, downClues)
+    print(tokens)
     words = set()
     for word in tokens:
         if(contains_multiple_words(word)):

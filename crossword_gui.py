@@ -113,18 +113,47 @@ class Ui_MainWindow(object):
         self.widget_3.setObjectName("widget_3")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.widget_3)
         self.gridLayout_3.setObjectName("gridLayout_3")
-        self.listWidget_2 = QtWidgets.QListWidget(self.widget_3)
-        self.listWidget_2.setWordWrap(True)
-        self.listWidget_2.setTextElideMode(QtCore.Qt.ElideNone)
-        self.listWidget_2.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.listWidget_2.setObjectName("listWidget_2")
-        self.gridLayout_3.addWidget(self.listWidget_2, 1, 0, 1, 1)
-        self.listWidget = QtWidgets.QListWidget(self.widget_3)
-        self.listWidget.setWordWrap(True)
-        self.listWidget.setTextElideMode(QtCore.Qt.ElideNone)
-        self.listWidget.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.listWidget.setObjectName("listWidget")
-        self.gridLayout_3.addWidget(self.listWidget, 1, 1, 1, 1)
+        self.tableWidget_2 = QtWidgets.QTableWidget(self.widget_3)
+        self.tableWidget_2.setGeometry(QtCore.QRect(10, 40, 241, 451))
+        self.tableWidget_2.setAutoFillBackground(False)
+        self.tableWidget_2.setTextElideMode(QtCore.Qt.ElideRight)
+        self.tableWidget_2.setShowGrid(False)
+        self.tableWidget_2.setGridStyle(QtCore.Qt.NoPen)
+        self.tableWidget_2.setCornerButtonEnabled(True)
+        self.tableWidget_2.setObjectName("tableWidget")
+        self.tableWidget_2.setColumnCount(2)
+        self.tableWidget_2.setRowCount(5)
+        self.tableWidget_2.horizontalHeader().setVisible(False)
+        self.tableWidget_2.horizontalHeader().setMinimumSectionSize(0)
+        self.tableWidget_2.horizontalHeader().setDefaultSectionSize(20)
+        self.tableWidget_2.horizontalHeader().setStretchLastSection(True)
+        self.tableWidget_2.verticalHeader().setVisible(False)
+        self.tableWidget_2.verticalHeader().setCascadingSectionResizes(True)
+        self.tableWidget_2.verticalHeader().setStretchLastSection(False)
+        self.tableWidget_2.verticalHeader().setDefaultSectionSize(60)
+        self.tableWidget_2.setWordWrap(True)
+        self.gridLayout_3.addWidget(self.tableWidget_2, 1, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.tableWidget_2, 1, 0, 1, 1)
+        self.tableWidget = QtWidgets.QTableWidget(self.widget_3)
+        self.tableWidget.setGeometry(QtCore.QRect(10, 40, 241, 451))
+        self.tableWidget.setAutoFillBackground(False)
+        self.tableWidget.setTextElideMode(QtCore.Qt.ElideRight)
+        self.tableWidget.setShowGrid(False)
+        self.tableWidget.setGridStyle(QtCore.Qt.NoPen)
+        self.tableWidget.setCornerButtonEnabled(True)
+        self.tableWidget.setObjectName("tableWidget")
+        self.tableWidget.setColumnCount(2)
+        self.tableWidget.setRowCount(5)
+        self.tableWidget.setWordWrap(True)
+        self.tableWidget.verticalHeader().setDefaultSectionSize(60)
+        self.tableWidget.horizontalHeader().setVisible(False)
+        self.tableWidget.horizontalHeader().setMinimumSectionSize(0)
+        self.tableWidget.horizontalHeader().setDefaultSectionSize(20)
+        self.tableWidget.horizontalHeader().setStretchLastSection(True)
+        self.tableWidget.verticalHeader().setVisible(False)
+        self.tableWidget.verticalHeader().setCascadingSectionResizes(True)
+        self.tableWidget.verticalHeader().setStretchLastSection(False)
+        self.gridLayout_3.addWidget(self.tableWidget, 1, 1, 1, 1)
         self.label_54 = QtWidgets.QLabel(self.widget_3)
         font = QtGui.QFont()
         font.setFamily("Arial")
@@ -177,14 +206,14 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "The Mini Crossword"))
         self.generateLabelNumbers(MainWindow, self.cellNumberArray, _translate, self.labels) #Generate numbers that will be displayed on the grid for the first grid.
         self.generateLabelNumbers(MainWindow, self.cellNumberArray, _translate, self.labels_2) #Generate numbers that will be displayed on the grid for the second grid.
-        __sortingEnabled = self.listWidget.isSortingEnabled() 
-        self.listWidget.setSortingEnabled(False)
-        self.listWidget.setSortingEnabled(__sortingEnabled) #Enable sorting for the clues so that the first clue starting with 1 is always on top.
+        __sortingEnabled = self.tableWidget.isSortingEnabled() 
+        self.tableWidget.setSortingEnabled(False)
+        self.tableWidget.setSortingEnabled(__sortingEnabled) #Enable sorting for the clues so that the first clue starting with 1 is always on top.
         self.label_54.setText(_translate("MainWindow", "ACROSS"))
         self.label_55.setText(_translate("MainWindow", "DOWN"))
 
         self.generateClues(MainWindow, self.cluesAcross, self.cluesDown, _translate)
-        self.label_56.setText(_translate("MainWindow", "Group LUMOS, Today\'s Date: {} {}".format(date.today().strftime("%d/%m/%Y"), datetime.now().strftime("%H:%M:%S"))))
+        self.label_56.setText(_translate("MainWindow", "LUMOS, {} {}".format(date.today().strftime("%d/%m/%Y"), datetime.now().strftime("%H:%M:%S"))))
 
     def generateInitialGrid(self, MainWindow, blackGrids, widgetName, input_grid, labels, gridList):
         """Generates the initial grid, creates frames and labels that we will fill later.
@@ -251,16 +280,40 @@ class Ui_MainWindow(object):
     def generateClues(self, MainWindow, cluesAcross, cluesDown, translate):
         """Places today's clues inside a list in order to display it onto the page. Clues information come from backend.
         """
+        no_row = 0
+        clue_row = 0
+        no_col = 0
+        clue_col = 1
         for across in cluesAcross:
-            item = QtWidgets.QListWidgetItem()
-            self.listWidget_2.addItem(item)
-            clue = "{} {} \n".format(str(across[0]), across[1])
-            item.setText(translate(str(MainWindow), clue))
+            item_no = QtWidgets.QTableWidgetItem()
+            item_no.setTextAlignment(QtCore.Qt.AlignTop)
+            self.tableWidget_2.setItem(no_row, no_col, item_no)
+            no_row += 1
+            item_clue = QtWidgets.QTableWidgetItem()
+            item_clue.setTextAlignment(QtCore.Qt.AlignTop)
+            self.tableWidget_2.setItem(clue_row, clue_col, item_clue)
+            clue_row += 1
+            no = across[0]
+            clue = across[1]
+            item_no.setText(translate(str(MainWindow), no))
+            item_clue.setText(translate(str(MainWindow),clue))
+        no_row = 0
+        clue_row = 0
+        no_col = 0
+        clue_col = 1
         for down in cluesDown:
-            item = QtWidgets.QListWidgetItem()
-            self.listWidget.addItem(item)
-            clue = "{} {} \n".format(str(down[0]), down[1])
-            item.setText(translate(str(MainWindow), clue))
+            item_no = QtWidgets.QTableWidgetItem()
+            item_no.setTextAlignment(QtCore.Qt.AlignTop)
+            self.tableWidget.setItem(no_row, no_col, item_no)
+            no_row += 1
+            item_clue = QtWidgets.QTableWidgetItem()
+            item_clue.setTextAlignment(QtCore.Qt.AlignTop)
+            self.tableWidget.setItem(clue_row, clue_col, item_clue)
+            clue_row += 1
+            no =down[0]
+            clue = down[1]
+            item_no.setText(translate(str(MainWindow), no))
+            item_clue.setText(translate(str(MainWindow),clue))
 
     def revealAnswers(self, cellAnswerArray, labels):
         """ Displays the letters that corresponds to the answers in the cells.

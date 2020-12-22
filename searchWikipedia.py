@@ -1,7 +1,4 @@
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 import wikipedia
-import time
 import string
 from combineTokens import combine_tokens
 
