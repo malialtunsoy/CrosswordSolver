@@ -97,4 +97,4 @@ class LUMOSCrosswordSolver:
 
 
 lumos = LUMOSCrosswordSolver()
-lumos.run(True)
+lumos.run(False)

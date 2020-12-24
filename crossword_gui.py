@@ -104,7 +104,8 @@ class Ui_MainWindow(object):
         self.gridList_2 = {}
 
         self.generateInitialGrid(MainWindow, self.cellBlockArray, self.widget_right, self.gridLayout_right, self.labels_2, self.gridList_2)
-        self.revealAnswers(self.solved, self.labels_2)
+        if len(self.solved) != 5:
+            self.revealAnswers(self.solved, self.labels_2)
 
         self.horizontalLayout.addWidget(self.widget)
         self.widget_3 = QtWidgets.QWidget(self.frame_2)
@@ -130,7 +131,7 @@ class Ui_MainWindow(object):
         self.tableWidget_2.verticalHeader().setVisible(False)
         self.tableWidget_2.verticalHeader().setCascadingSectionResizes(True)
         self.tableWidget_2.verticalHeader().setStretchLastSection(False)
-        self.tableWidget_2.verticalHeader().setDefaultSectionSize(60)
+        self.tableWidget_2.verticalHeader().setDefaultSectionSize(80)
         self.tableWidget_2.setWordWrap(True)
         self.gridLayout_3.addWidget(self.tableWidget_2, 1, 0, 1, 1)
         self.gridLayout_3.addWidget(self.tableWidget_2, 1, 0, 1, 1)
@@ -145,7 +146,7 @@ class Ui_MainWindow(object):
         self.tableWidget.setColumnCount(2)
         self.tableWidget.setRowCount(5)
         self.tableWidget.setWordWrap(True)
-        self.tableWidget.verticalHeader().setDefaultSectionSize(60)
+        self.tableWidget.verticalHeader().setDefaultSectionSize(80)
         self.tableWidget.horizontalHeader().setVisible(False)
         self.tableWidget.horizontalHeader().setMinimumSectionSize(0)
         self.tableWidget.horizontalHeader().setDefaultSectionSize(20)
@@ -285,11 +286,17 @@ class Ui_MainWindow(object):
         no_col = 0
         clue_col = 1
         for across in cluesAcross:
+            font = QtGui.QFont()
+            font.setFamily("Arial")
+            font.setPointSize(14)
+            font.setBold(False)
             item_no = QtWidgets.QTableWidgetItem()
+            item_no.setFont(font)
             item_no.setTextAlignment(QtCore.Qt.AlignTop)
             self.tableWidget_2.setItem(no_row, no_col, item_no)
             no_row += 1
             item_clue = QtWidgets.QTableWidgetItem()
+            item_clue.setFont(font)
             item_clue.setTextAlignment(QtCore.Qt.AlignTop)
             self.tableWidget_2.setItem(clue_row, clue_col, item_clue)
             clue_row += 1
@@ -302,11 +309,17 @@ class Ui_MainWindow(object):
         no_col = 0
         clue_col = 1
         for down in cluesDown:
+            font = QtGui.QFont()
+            font.setFamily("Arial")
+            font.setPointSize(14)
+            font.setBold(False)
             item_no = QtWidgets.QTableWidgetItem()
             item_no.setTextAlignment(QtCore.Qt.AlignTop)
+            item_no.setFont(font)
             self.tableWidget.setItem(no_row, no_col, item_no)
             no_row += 1
             item_clue = QtWidgets.QTableWidgetItem()
+            item_clue.setFont(font)
             item_clue.setTextAlignment(QtCore.Qt.AlignTop)
             self.tableWidget.setItem(clue_row, clue_col, item_clue)
             clue_row += 1
