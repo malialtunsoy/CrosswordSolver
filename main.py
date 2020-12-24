@@ -1,8 +1,8 @@
 from requests.api import delete
 from scraping import Scraping
 from crosswordSolver import CrosswordSolver
-from nyTimesPuzzle import Connector
-from newSolver import newSolver
+from Connector import Connector
+from newSolver import NewSolver
 from PyQt5 import QtCore, QtGui, QtWidgets, Qt
 from crossword_gui import Ui_MainWindow
 import json
@@ -37,7 +37,7 @@ class LUMOSCrosswordSolver:
                 self.clues, self.cellAnswerArray, self.cellNumberArray)
             webScrapper.setDomains()
             print("===================\nSOLVING THE PUZZLE\n===================")
-            puzzleSolver = newSolver(self.cellBlockArray, self.cellNumberArray,
+            puzzleSolver = NewSolver(self.cellBlockArray, self.cellNumberArray,
                                      self.cluesDown, self.cluesAcross, webScrapper.domains)
         else:
 
@@ -58,7 +58,7 @@ class LUMOSCrosswordSolver:
             webScrapper = Scraping(self.clues, self.cellAnswerArray, self.cellNumberArray)
             webScrapper.setDomains()
             print("===================\nSOLVING THE PUZZLE\n===================")
-            puzzleSolver = newSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, webScrapper.domains)
+            puzzleSolver = NewSolver(self.cellBlockArray, self.cellNumberArray,self.cluesDown, self.cluesAcross, webScrapper.domains)
 
         # SAVE
         """
@@ -97,4 +97,4 @@ class LUMOSCrosswordSolver:
 
 
 lumos = LUMOSCrosswordSolver()
-lumos.run(True)
+lumos.run(False)
