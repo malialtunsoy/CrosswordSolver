@@ -104,8 +104,7 @@ class Ui_MainWindow(object):
         self.gridList_2 = {}
 
         self.generateInitialGrid(MainWindow, self.cellBlockArray, self.widget_right, self.gridLayout_right, self.labels_2, self.gridList_2)
-        if len(self.solved) != 5:
-            self.revealAnswers(self.solved, self.labels_2)
+        self.revealAnswers(self.solved, self.labels_2)
 
         self.horizontalLayout.addWidget(self.widget)
         self.widget_3 = QtWidgets.QWidget(self.frame_2)
@@ -331,6 +330,7 @@ class Ui_MainWindow(object):
     def revealAnswers(self, cellAnswerArray, labels):
         """ Displays the letters that corresponds to the answers in the cells.
         """
+        print(cellAnswerArray)
         for row in range(5):
             for col in range(5):
                 if cellAnswerArray[row][col] != '-':
